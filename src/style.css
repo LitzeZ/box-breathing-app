@@ -1,0 +1,746 @@
+:root {
+    /* Theme Variables */
+    --accent-color: #fff;
+    --font-main: 'Outfit', sans-serif;
+
+    /* Glassmorphism System - Premium Dark */
+    --glass-bg: rgba(23, 28, 33, 0.4);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+    --glow-color: rgba(255, 255, 255, 0.5);
+
+    /* Colors */
+    --c-bg-top: #0a151a;
+    --c-bg-mid: #0d2129;
+    --c-bg-bot: #142a33;
+    --c-timer-bg: #0a1014;
+    --c-btn-red: #4a3b3b;
+    --c-btn-red-text: #e0b0b0;
+}
+
+* {
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    margin: 0;
+    height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Deep "Calm Night" Gradient - Exact Match attempt */
+    background: radial-gradient(circle at 50% 30%, #1a3a4a 0%, #0d2129 40%, #0a151a 100%);
+    background-size: 100% 100%;
+    animation: bgPulse 30s ease infinite alternate;
+    font-family: var(--font-main);
+    color: var(--accent-color);
+    overflow: hidden;
+    background-color: #0f2027;
+    /* Fallback */
+    /* iOS Fix: Ensure body is tall enough */
+    min-height: 100dvh;
+}
+
+html {
+    background-color: #0f2027;
+    height: 100%;
+}
+
+@keyframes bgPulse {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 100% 50%;
+    }
+}
+
+/* Layout Refactor: Stable Absolute Center */
+.container {
+    position: relative;
+    text-align: center;
+    padding: 2rem 0;
+    border-radius: 40px;
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    max-width: 480px;
+    width: 90%;
+    /* Ensure enough height for the absolute elements */
+    height: 85dvh;
+    min-height: 600px;
+    transition: transform 0.3s ease;
+
+    /* Flex Column Layout */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Header Group */
+.app-header {
+    display: flex;
+    flex-direction: row;
+    /* Horizontal */
+    align-items: center;
+    justify-content: center;
+    /* Centered Title */
+    width: 100%;
+    z-index: 20;
+    margin-top: 1rem;
+    padding: 0 5%;
+}
+
+.header-spacer {
+    width: 24px;
+}
+
+/* Typography Positioned Absolutely */
+/* Typography - Natural Flow */
+h1 {
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-size: 1.6rem;
+    opacity: 0.9;
+    color: #e0e6e8;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    margin: 0;
+    z-index: 20;
+    pointer-events: none;
+}
+
+.session-timer {
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: #aeb5b8;
+    background: var(--c-timer-bg);
+    padding: 8px 24px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    margin: 0;
+    width: fit-content;
+    z-index: 20 !important;
+}
+
+/* Visualizer - Centered by Container Flex */
+.circle-container {
+    position: relative;
+    /* Removed margins as flex handles centering */
+    margin: 0;
+    width: 220px;
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    z-index: 10;
+}
+
+/* Controls - Natural Flow Bottom */
+.controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    /* Space between start button and timer */
+    width: 100%;
+    margin: 0;
+    margin-bottom: 3rem;
+    z-index: 20;
+}
+
+
+
+
+/* Base backdrop-filter for capable devices */
+@supports (backdrop-filter: blur(20px)) or (-webkit-backdrop-filter: blur(20px)) {
+    .container {
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+    }
+}
+
+/* Fallback/Optimization for low-end or reduced motion */
+@media (prefers-reduced-motion: reduce),
+(max-width: 480px) {
+    .container {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        background: rgba(15, 32, 39, 0.85);
+        /* Darker solid fallback */
+    }
+
+    .session-timer,
+    button#start-btn {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        background: rgba(0, 0, 0, 0.5) !important;
+    }
+}
+
+/* Typography */
+
+
+
+
+.timer-control {
+    cursor: pointer;
+    font-weight: 400;
+    opacity: 0.5;
+    transition: all 0.2s;
+    user-select: none;
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+}
+
+.timer-control:hover {
+    opacity: 1;
+    transform: scale(1.2);
+}
+
+.text-fade-out {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+    filter: blur(4px);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.text-fade-in {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Visualizer */
+
+
+.circle {
+    width: 190px;
+    /* Adjusted to match ring stroke offset better if needed, or keep 280 */
+    height: 190px;
+    border-radius: 50%;
+    /* More subtle gradient */
+    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.05));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+        0 0 30px rgba(255, 255, 255, 0.1),
+        inset 0 0 30px rgba(255, 255, 255, 0.2);
+    position: relative;
+    /* Use Flexbox from container for centering, no need for absolute/transform hack */
+    z-index: 10;
+    touch-action: manipulation;
+    /* Remove generic transition to prevent fighting with keyframes */
+    transition: box-shadow 0.5s ease, opacity 0.5s ease;
+    /* Performance Optimizations */
+    will-change: transform;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    /* Force GPU */
+}
+
+/* GPU Accelerated Glow Layer */
+.circle::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 50%;
+    /* The active glow state */
+    box-shadow: 0 0 50px rgba(255, 255, 255, 0.4), inset 0 0 50px rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    will-change: opacity;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Animations Logic - Scale handled by JS for smoothness */
+
+.circle.stopped {
+    transform: scale(0.85);
+    opacity: 0.8;
+    /* Increased from 0.6 for better visibility */
+    filter: grayscale(0.3);
+    /* Reduced from 0.5 */
+    transition: all 0.5s ease;
+}
+
+/* Bind glow opacity to the breath logic via class additions if needed */
+.circle.inhale::before {
+    animation: glowPulse var(--dur) cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.circle.exhale::before {
+    animation: glowPulse var(--dur) cubic-bezier(0.4, 0, 0.2, 1) reverse forwards;
+}
+
+@keyframes glowPulse {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+
+
+/* UI Elements */
+.countdown {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 5rem;
+    font-weight: 300;
+    /* Increased from 100 for legibility */
+    color: #fff;
+    z-index: 20;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    font-variant-numeric: tabular-nums;
+}
+
+.progress-ring {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    transform: rotate(-90deg);
+    pointer-events: none;
+}
+
+.progress-ring circle {
+    stroke: rgba(255, 255, 255, 0.2);
+    /* Fainter track */
+    stroke-width: 1.5;
+    /* Thinner line */
+    fill: transparent;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.1s linear;
+}
+
+
+
+/* Stepper */
+.stepper-wrapper {
+    display: -webkit-flex;
+    /* Safari */
+    display: flex;
+    flex-direction: row;
+    /* Explicit row */
+    flex-wrap: nowrap;
+    /* Force single line */
+    align-items: center;
+    justify-content: center;
+    /* Center the group, but gap provides separation */
+    gap: 1.5rem;
+    /* Increased gap for better Left/Right separation */
+    width: 100%;
+    margin-bottom: 0px;
+    /* Reset margin */
+}
+
+.stepper-btn {
+    padding: 0;
+    background: rgba(255, 255, 255, 0.08);
+    /* Darker/Subtle */
+    border: none;
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0.7);
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    opacity: 1;
+}
+
+.stepper-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+    opacity: 1;
+}
+
+.stepper-btn:active {
+    transform: scale(0.95);
+}
+
+.duration-display {
+    font-size: 2rem;
+    font-weight: 200;
+    min-width: 80px;
+    text-align: center;
+    margin: 0;
+    text-shadow: none;
+    font-variant-numeric: tabular-nums;
+}
+
+.label-text {
+    font-size: 0.75rem;
+    opacity: 0.5;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: -15px;
+}
+
+/* Helper Buttons (Start/Stop) */
+button#start-btn {
+    padding: 1.2rem 0;
+    width: 200px;
+    /* FIXED width for better visuals */
+    background: rgba(255, 255, 255, 0.1);
+    /* Slightly more visible glass */
+    color: #fff;
+    font-family: inherit;
+    font-size: 1.1rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 60px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1.5rem;
+    position: relative;
+    outline: none;
+    /* Prevent focus line */
+    -webkit-tap-highlight-color: transparent;
+    /* Use shadow for layout and inner highlight to avoid border artifacts */
+    box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+button#start-btn:hover {
+    background: rgba(255, 255, 255, 0.18);
+    transform: translateY(-1px);
+    box-shadow:
+        0 6px 25px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Stop State - Reddish */
+button.stop {
+    background: rgba(142, 68, 68, 0.8) !important;
+    /* Slightly transparent for blending */
+    border: none !important;
+    color: #fff !important;
+    /* Red glow + subtle top highlight */
+    box-shadow:
+        0 0 25px rgba(142, 68, 68, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+button.stop:hover {
+    background: rgba(160, 80, 80, 0.9) !important;
+    color: #fff !important;
+}
+
+/* Audio Toggle */
+.icon-btn {
+    margin-top: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    /* Subtle background */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.6;
+    transition: all 0.3s;
+    cursor: pointer;
+    color: #fff !important;
+}
+
+.icon-btn svg {
+    fill: #fff !important;
+    pointer-events: none;
+}
+
+@media (max-width: 768px) {
+    body {
+        /* iOS Fix: DEFAULT SCROLL BEHAVIOR for gradients to avoid the "cut" line */
+        background: radial-gradient(circle at 50% 30%, #1a3a4a 0%, #0d2129 40%, #0a151a 100%);
+        background-size: 150% 150%;
+        /* Larger size to cover bounce */
+        /* NO fixed attachment on mobile */
+    }
+
+    .container {
+        /* On mobile, we still want the absolute layout, but maybe scaled */
+        width: 100%;
+        max-width: none;
+        height: 100dvh;
+        border-radius: 0;
+        border: none;
+        padding-top: max(2rem, env(safe-area-inset-top) + 1rem);
+        padding-bottom: max(2rem, env(safe-area-inset-bottom) + 2rem);
+    }
+
+    /* Adjust vertical spacing for mobile */
+    .circle-container {
+        transform: scale(0.9);
+    }
+
+    .session-timer {
+        top: 6.5rem;
+        /* Give a bit more space from title */
+    }
+
+    h1 {
+        margin-top: 1rem;
+    }
+}
+
+/* Center Group Wrapper */
+.visual-center-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    width: 100%;
+    flex: 1;
+    z-index: 10;
+}
+
+.icon-btn.bottom-settings {
+    margin-top: 1.5rem;
+    opacity: 0.4;
+    transform: scale(0.9);
+}
+
+.icon-btn.bottom-settings:hover {
+    opacity: 0.8;
+    transform: scale(1.0);
+}
+
+/* --- Settings Overlay Styles --- */
+.settings-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    /* Dim background */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.settings-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.settings-card {
+    background: rgba(23, 28, 33, 0.85);
+    /* Dark Glass */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    width: 90%;
+    max-width: 400px;
+    border-radius: 24px;
+    padding: 24px;
+    transform: translateY(0);
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.settings-overlay.hidden .settings-card {
+    transform: translateY(20px) scale(0.95);
+}
+
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.settings-header h2 {
+    font-size: 1.4rem;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    margin: 0;
+    color: #fff;
+}
+
+.close-btn {
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    margin: 0;
+}
+
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
+    min-height: 72px;
+    gap: 16px;
+    /* Better spacing to prevent squish */
+}
+
+.setting-label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: left;
+    flex: 1;
+    /* Take available space */
+}
+
+.setting-label span {
+    font-size: 1rem;
+    color: #e0e6e8;
+}
+
+.setting-label small {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.setting-footer {
+    text-align: center;
+    opacity: 0.3;
+    margin-top: 10px;
+}
+
+/* Switch Component */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 28px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.1);
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+input:checked+.slider {
+    background-color: rgba(255, 255, 255, 0.3);
+    /* Active Color */
+}
+
+input:checked+.slider:before {
+    transform: translateX(22px);
+}
+
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+/* Mini Stepper for Settings */
+.stepper-wrapper.small {
+    gap: 0.4rem;
+    /* Reduced gap for tighter layout */
+    width: auto;
+    /* CRITICAL FIX: Allow it to size to content instead of 100% */
+    flex-shrink: 0;
+    /* Prevent shrinking */
+    margin: 0;
+}
+
+.stepper-btn.mini {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.stepper-btn.mini:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Fix for Duration Display in Settings to prevent layout shift */
+.stepper-wrapper.small .duration-display {
+    font-size: 1.4rem;
+    min-width: 60px;
+}
+
+/* Zen Mode Hidden State (Slow Fade) */
+body.zen-mode .app-header,
+body.zen-mode .controls,
+body.zen-mode .settings-overlay {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transition: opacity 3.0s ease-out;
+    /* Slower fade out */
+}
+
+body.zen-mode .container {
+    background: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    transition: all 3.0s ease-out;
+}
