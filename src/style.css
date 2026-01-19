@@ -683,16 +683,48 @@ button.stop:hover {
     flex: 0 0 auto;
 }
 
-/* Force controls to new line if they don't fit */
-@media (max-width: 360px) {
-    .stepper-wrapper.small {
-        margin-top: 8px;
-        width: 100%;
-        justify-content: space-between;
+/* Force controls to new line on mobile for better touch targets */
+@media (max-width: 480px) {
+
+    /* Push first item down so it's not behind the sticky header */
+    .setting-item:first-of-type {
+        margin-top: 10px;
     }
 
+    /* Stack settings vertically */
     .setting-item {
-        justify-content: flex-start;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .setting-label {
+        width: 100%;
+        margin-bottom: 4px;
+    }
+
+    .stepper-wrapper.small,
+    .segmented-control,
+    .soundscape-grid,
+    .switch {
+        width: 100%;
+        /* Full width controls */
+        justify-content: space-between;
+        /* Spread buttons */
+    }
+
+    /* Center the switch if desired, or keep left. Let's keep right aligned or full width row */
+    .switch {
+        align-self: flex-end;
+        /* Keep switch on right if possible, or left */
+        width: auto;
+    }
+
+    /* Specific tweak for the switch item to keep it row-based if label fits */
+    .setting-item:has(.switch) {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
     }
 }
 
