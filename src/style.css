@@ -564,23 +564,60 @@ button.stop:hover {
 }
 
 .settings-card {
-    background: rgba(23, 28, 33, 0.85);
-    /* Dark Glass */
+    background: rgba(23, 28, 33, 0.95);
+    /* Slightly more opaque for readability */
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
     width: 90%;
     max-width: 400px;
+    /* Limit height to prevent overlap with notch/home bar if centered */
+    max-height: 80dvh;
+    overflow-y: auto;
     border-radius: 24px;
     padding: 24px;
+    /* Smooth scroll */
+    -webkit-overflow-scrolling: touch;
+
     transform: translateY(0);
     transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
+    /* Reduced gap slightly */
+
+    /* Safe Area for internal scrolling content if needed */
+    padding-bottom: max(24px, env(safe-area-inset-bottom));
 }
 
-.settings-overlay.hidden .settings-card {
-    transform: translateY(20px) scale(0.95);
+/* Mobile optimizations */
+@media (max-width: 480px) {
+    .settings-overlay {
+        align-items: flex-end;
+        /* Bottom Sheet style on mobile */
+    }
+
+    .settings-card {
+        width: 100%;
+        max-width: 100%;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        max-height: 85dvh;
+        margin-bottom: 0;
+        padding: 20px;
+        padding-bottom: max(30px, env(safe-area-inset-bottom) + 10px);
+    }
+
+    /* Title bar spacing */
+    .settings-header {
+        margin-bottom: 10px;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    /* Fix overlap with status bar if using top alignment, 
+       but with bottom sheet style this is less critical.
+       Still, good to ensure header doesn't get cut off. */
 }
 
 .settings-header {
@@ -588,6 +625,8 @@ button.stop:hover {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 5px;
+    flex-shrink: 0;
+    /* Prevent shrinking */
 }
 
 .settings-header h2 {
@@ -614,8 +653,9 @@ button.stop:hover {
     background: rgba(255, 255, 255, 0.03);
     border-radius: 16px;
     min-height: 72px;
-    gap: 16px;
-    /* Better spacing to prevent squish */
+    gap: 12px;
+    flex-wrap: wrap;
+    /* Allow wrapping for small screens */
 }
 
 .setting-label {
@@ -623,8 +663,29 @@ button.stop:hover {
     flex-direction: column;
     gap: 4px;
     text-align: left;
-    flex: 1;
-    /* Take available space */
+    flex: 1 1 120px;
+    /* Allow growing/shrinking with min-width */
+}
+
+/* Ensure controls don't get squashed */
+.switch,
+.stepper-wrapper.small,
+.segmented-control,
+.soundscape-grid {
+    flex: 0 0 auto;
+    /* Stop shrinking */
+}
+
+/* Exception for full-width controls like Pattern/Soundscape if needed */
+.setting-item:has(#pattern-selector),
+.setting-item:has(#soundscape-selector) {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.setting-item:has(#pattern-selector) .segmented-control,
+.setting-item:has(#soundscape-selector) .soundscape-grid {
+    width: 100%;
 }
 
 .setting-label span {
