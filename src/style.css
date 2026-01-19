@@ -744,3 +744,24 @@ body.zen-mode .container {
     -webkit-backdrop-filter: none !important;
     transition: all 3.0s ease-out;
 }
+
+/* Streak Badge */
+.streak-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 179, 0, 0.15); /* Gold tint */
+    color: #ffb300;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: 1px solid rgba(255, 179, 0, 0.3);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    margin-right: auto;
+    margin-left: 15px;
+}
+
+.streak-badge.hidden {
+    display: none;
+}

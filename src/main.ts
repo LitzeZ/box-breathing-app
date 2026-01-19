@@ -17,6 +17,8 @@ interface DOMElements {
     closeSettingsBtn: HTMLElement;
     zenModeToggle: HTMLInputElement; // Typed as input
     sessionTimeDisplay?: HTMLElement;
+    streakBadge: HTMLElement;
+    streakCount: HTMLElement;
 }
 
 interface AppState {
@@ -29,6 +31,8 @@ interface AppState {
     sessionMinutes: number;
     sessionEndTime: number | null;
     isZenModeEnabled: boolean;
+    streak: number;
+    lastVisit: string | null;
 }
 
 interface AppConfig {
@@ -73,7 +77,9 @@ class BoxBreathingApp {
             settingsOverlay: document.getElementById("settings-overlay")!,
             settingsBtn: document.getElementById("settings-btn")!,
             closeSettingsBtn: document.getElementById("close-settings-btn")!,
-            zenModeToggle: document.getElementById("zen-mode-toggle") as HTMLInputElement
+            zenModeToggle: document.getElementById("zen-mode-toggle") as HTMLInputElement,
+            streakBadge: document.getElementById("streak-badge")!,
+            streakCount: document.querySelector(".streak-count") as HTMLElement
         };
 
         this.lastMouseX = 0;
@@ -89,7 +95,9 @@ class BoxBreathingApp {
             animationFrameId: null,
             sessionMinutes: 15, // Default duration setting
             sessionEndTime: null,
-            isZenModeEnabled: false // Settings Preference
+            isZenModeEnabled: false, // Settings Preference
+            streak: 0,
+            lastVisit: null
         };
 
         this.config = {
@@ -106,6 +114,7 @@ class BoxBreathingApp {
         this.idleTimer = null;
 
         this.init();
+        this.loadStreak();
     }
 
     init() {
@@ -352,7 +361,7 @@ class BoxBreathingApp {
 
         this.animateText("Box Breathing");
         this.dom.countdown.textContent = "";
-        this.dom.progressCircle.style.strokeDashoffset = this.config.circleCircumference as unknown as string; // Casting or correct type usage. strokeDashoffset accepts string or number usually.
+        this.dom.progressCircle.style.strokeDashoffset = this.config.circleCircumference.toString();
 
         this.releaseWakeLock();
     }
@@ -447,11 +456,65 @@ class BoxBreathingApp {
             const sessionRemaining = Math.max(0, Math.ceil((this.state.sessionEndTime - now) / 1000));
 
             if (sessionRemaining <= 0) {
+                this.updateStreak(); // Session successfully completed
                 this.stop();
                 return;
             }
             // Only update display numbers
             this.updateSessionDisplay();
+        }
+    }
+
+    loadStreak() {
+        const storedStreak = localStorage.getItem("boxBreathingStreak");
+        const storedLastVisit = localStorage.getItem("boxBreathingLastVisit");
+
+        if (storedStreak) this.state.streak = parseInt(storedStreak, 10);
+        if (storedLastVisit) this.state.lastVisit = storedLastVisit;
+
+        this.updateStreakDisplay();
+    }
+
+    updateStreak() {
+        const today = new Date().toDateString();
+        const lastVisit = this.state.lastVisit;
+
+        if (lastVisit === today) {
+            // Already counted for today
+            return;
+        }
+
+        if (lastVisit) {
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+
+            if (lastVisit === yesterday.toDateString()) {
+                // Consecutive day
+                this.state.streak++;
+            } else {
+                // Streak broken
+                this.state.streak = 1;
+            }
+        } else {
+            // First ever session
+            this.state.streak = 1;
+        }
+
+        this.state.lastVisit = today;
+
+        // Persist
+        localStorage.setItem("boxBreathingStreak", this.state.streak.toString());
+        localStorage.setItem("boxBreathingLastVisit", this.state.lastVisit);
+
+        this.updateStreakDisplay();
+    }
+
+    updateStreakDisplay() {
+        if (this.state.streak > 0) {
+            this.dom.streakBadge.classList.remove("hidden");
+            this.dom.streakCount.textContent = this.state.streak.toString();
+        } else {
+            this.dom.streakBadge.classList.add("hidden");
         }
     }
 
@@ -508,26 +571,25 @@ class BoxBreathingApp {
 
         // Deep Push (Thump) - Enhanced for AirPods/Mobile
         // Kick drum style: Frequency sweep for "impact"
-        const osc = this.audioContext.createOscillator();
+        const oscillator = this.audioContext.createOscillator();
         const gain = this.audioContext.createGain();
 
-        osc.connect(gain);
+        oscillator.connect(gain);
         gain.connect(this.audioContext.destination);
 
         const now = this.audioContext.currentTime;
 
         // Frequency Sweep (Drop from 150Hz to 50Hz)
-        // This makes it audible as a "thump" rather than just a low rumble
-        osc.frequency.setValueAtTime(150, now);
-        osc.frequency.exponentialRampToValueAtTime(50, now + 0.15);
+        oscillator.frequency.setValueAtTime(150, now);
+        oscillator.frequency.exponentialRampToValueAtTime(50, now + 0.15);
 
         // Envelope (Punchy)
         gain.gain.setValueAtTime(0, now);
         gain.gain.linearRampToValueAtTime(0.8, now + 0.02); // Louder start
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
 
-        osc.start(now);
-        osc.stop(now + 0.5);
+        oscillator.start(now);
+        oscillator.stop(now + 0.5);
     }
 
     triggerHaptic() {
@@ -540,8 +602,6 @@ class BoxBreathingApp {
         }
 
         // Fallback: iOS / Desktop "Audio Haptic" (Low frequency thump)
-        // Note: Logic allows both if supported, but typically mobile chrome supports vibrate. 
-        // We can just keep it simple.
         if (!navigator.vibrate && this.audioContext && !this.state.isMuted) {
             this.playHapticSound(isActivePhase);
         }
@@ -551,13 +611,13 @@ class BoxBreathingApp {
         if (!this.audioContext) return;
 
         // Simulates a "thump" using a low frequency wave
-        const osc = this.audioContext.createOscillator();
+        const oscillator = this.audioContext.createOscillator();
         const gain = this.audioContext.createGain();
 
-        osc.connect(gain);
+        oscillator.connect(gain);
         gain.connect(this.audioContext.destination);
 
-        osc.frequency.value = 60; // 60Hz is felt more than heard on small speakers
+        oscillator.frequency.value = 60; // 60Hz is felt more than heard on small speakers
 
         const now = this.audioContext.currentTime;
         const duration = isStrong ? 0.08 : 0.04;
@@ -566,8 +626,8 @@ class BoxBreathingApp {
         gain.gain.linearRampToValueAtTime(1.0, now + 0.01); // Sharp attack
         gain.gain.exponentialRampToValueAtTime(0.01, now + duration);
 
-        osc.start(now);
-        osc.stop(now + duration);
+        oscillator.start(now);
+        oscillator.stop(now + duration);
     }
 
     toggleAudio() {
