@@ -1,28 +1,20 @@
-const CACHE_NAME = 'box-breathing-v22-no-particles';
-const ASSETS = [
-    './',
-    './index.html',
-    './css/style.css',
-    './js/script.js',
-    './icon.png',
-    './manifest.json'
-];
+// Self-destructing Service Worker
+// This replaces the legacy SW to force immediate unregistration and cache clearing.
 
 self.addEventListener('install', (e) => {
-    // Force new SW to take control immediately
     self.skipWaiting();
-    e.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
-    );
 });
 
 self.addEventListener('activate', (e) => {
-    // Claim clients immediately so the new SW controls the page proper
-    e.waitUntil(self.clients.claim());
-});
-
-self.addEventListener('fetch', (e) => {
-    e.respondWith(
-        caches.match(e.request).then((response) => response || fetch(e.request))
-    );
+    // Unregister self immediately
+    self.registration.unregister()
+        .then(() => {
+            return self.clients.matchAll();
+        })
+        .then((clients) => {
+            clients.forEach(client => {
+                // Force reload of controlling pages
+                client.navigate(client.url);
+            });
+        });
 });
