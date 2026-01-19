@@ -135,14 +135,16 @@
     </div>
 
     <script type="module" src="/src/main.ts"></script>
-    // Unregister legacy Service Workers to prevent caching issues
-    if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then(function(registrations) {
-    for(let registration of registrations) {
-    registration.unregister();
-    }
-    });
-    }
+    <script>
+        // Unregister legacy Service Workers to prevent caching issues
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function (registrations) {
+                for (let registration of registrations) {
+                    registration.unregister();
+                }
+            });
+        }
+    </script>
 </body>
 
 </html>
