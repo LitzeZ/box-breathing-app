@@ -609,10 +609,17 @@ button.stop:hover {
 
     /* Title bar spacing */
     .settings-header {
-        margin-bottom: 10px;
+        margin: -24px -24px 16px -24px;
+        /* Pull to edges */
+        padding: 24px 24px 16px 24px;
         position: sticky;
         top: 0;
-        z-index: 10;
+        z-index: 20;
+        background: rgba(23, 28, 33, 0.98);
+        /* Opaque background to hide scrolling content */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        /* Separator */
+        flex-shrink: 0;
     }
 
     /* Fix overlap with status bar if using top alignment, 
@@ -649,13 +656,12 @@ button.stop:hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 16px;
+    padding: 16px;
     background: rgba(255, 255, 255, 0.03);
     border-radius: 16px;
     min-height: 72px;
     gap: 12px;
     flex-wrap: wrap;
-    /* Allow wrapping for small screens */
 }
 
 .setting-label {
@@ -663,8 +669,10 @@ button.stop:hover {
     flex-direction: column;
     gap: 4px;
     text-align: left;
-    flex: 1 1 120px;
-    /* Allow growing/shrinking with min-width */
+    flex: 1 1 auto;
+    /* Allow flexible growth */
+    min-width: 140px;
+    /* Ensure label doesn't get crushed */
 }
 
 /* Ensure controls don't get squashed */
@@ -673,7 +681,19 @@ button.stop:hover {
 .segmented-control,
 .soundscape-grid {
     flex: 0 0 auto;
-    /* Stop shrinking */
+}
+
+/* Force controls to new line if they don't fit */
+@media (max-width: 360px) {
+    .stepper-wrapper.small {
+        margin-top: 8px;
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .setting-item {
+        justify-content: flex-start;
+    }
 }
 
 /* Exception for full-width controls like Pattern/Soundscape if needed */
