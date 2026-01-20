@@ -692,82 +692,69 @@ button.stop:hover {
         margin-top: 10px;
     }
 
-    /* DEFAULT: Row layout (Good for Toggles/Buttons) */
+    /* DEFAULT: Row layout (Toggles, etc.) */
     .setting-item {
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
         gap: 12px;
         flex-wrap: nowrap;
-        /* Prevent wrapping for simple items */
     }
 
     .setting-label {
         width: auto;
         margin-bottom: 0;
         flex: 1;
-        /* Label takes space */
         min-width: 0;
-        /* Allow text truncate if needed */
+        margin-right: 12px;
+        /* Margin for spacing against toggle */
     }
 
-    /* EXCEPTION: Complex controls go Vertical */
-    /* Target items that contain large controls */
-    .setting-item:has(.segmented-control),
-    .setting-item:has(.soundscape-grid) {
-        flex-direction: column;
-        align-items: flex-start;
+    /* VERTICAL FORCE: Use explicit class */
+    .setting-item.vertical-mobile {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        justify-content: flex-start !important;
+        height: auto !important;
+        min-height: 80px;
+        /* Give it space */
+        padding-bottom: 16px;
     }
 
-    /* Adjust children of vertical items */
-    .setting-item:has(.segmented-control) .setting-label,
-    .setting-item:has(.soundscape-grid) .setting-label {
+    .setting-item.vertical-mobile .setting-label {
         width: 100%;
         margin-bottom: 8px;
+        margin-right: 0;
+        flex: none;
+        /* Do not grow/shrink in column mode */
     }
 
-    /* Full width controls */
-    .segmented-control,
-    .soundscape-grid {
+    /* Full width controls in vertical mode */
+    .setting-item.vertical-mobile .segmented-control,
+    .setting-item.vertical-mobile .soundscape-grid,
+    .setting-item.vertical-mobile .stepper-wrapper {
         width: 100%;
         max-width: none;
     }
 
-    /* Stepper: Keep Horizontal but Ensure Fit */
-    .setting-item:has(.stepper-wrapper) {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .setting-item:has(.stepper-wrapper) .setting-label {
-        width: 100%;
-        margin-bottom: 8px;
-    }
-
+    /* Optimization for controls */
     .stepper-wrapper.small {
         display: flex;
-        width: 100%;
         justify-content: space-between;
-        /* Spread buttons to edges */
-        align-items: center;
+        width: 100%;
         background: rgba(255, 255, 255, 0.05);
         padding: 4px;
         border-radius: 12px;
-        margin: 0;
     }
 
-    /* Ensure Soundscape buttons fit */
     .soundscape-grid {
-        flex-wrap: nowrap;
-        /* No wrapping, just shrink */
-        overflow-x: auto;
-        /* Scroll if absolutely necessary */
         justify-content: space-between;
+        overflow-x: auto;
     }
 
     .sound-btn {
-        min-width: 0;
         flex: 1;
+        min-width: 0;
     }
 }
 
