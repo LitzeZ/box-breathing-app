@@ -30,8 +30,8 @@
     <meta name="twitter:title" content="Box Breathing">
     <meta name="twitter:description" content="Simple, effective box breathing meditation.">
     <meta name="twitter:image" content="https://LitzeZ.github.io/BoxBreathing/icon.png">
-  <script type="module" crossorigin src="/box-breathing-app/assets/index-Bp_pAQEE.js"></script>
-  <link rel="stylesheet" crossorigin href="/box-breathing-app/assets/index-DIfp96HW.css">
+  <script type="module" crossorigin src="/box-breathing-app/assets/index-BcnGlcns.js"></script>
+  <link rel="stylesheet" crossorigin href="/box-breathing-app/assets/index-CERI4Cyh.css">
 </head>
 
 <body>
@@ -86,52 +86,55 @@
                 </button>
             </div>
 
-            <div class="setting-item">
-                <div class="setting-label">
-                    <span>Zen Mode</span>
-                    <small>Hide interface after inactivity</small>
+            <!-- Scrollable Content Wrapper -->
+            <div class="settings-content-scroll">
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <span>Zen Mode</span>
+                        <small>Hide interface after inactivity</small>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="zen-mode-toggle">
+                        <span class="slider round"></span>
+                    </label>
                 </div>
-                <label class="switch">
-                    <input type="checkbox" id="zen-mode-toggle">
-                    <span class="slider round"></span>
-                </label>
-            </div>
 
-            <div class="setting-item mobile-layout-fix">
-                <div class="setting-label">
-                    <span>Duration per Phase</span>
-                    <small>Inhale, Hold, Exhale</small>
+                <div class="setting-item mobile-layout-fix">
+                    <div class="setting-label">
+                        <span>Duration per Phase</span>
+                        <small>Inhale, Hold, Exhale</small>
+                    </div>
+                    <div class="stepper-wrapper small">
+                        <button id="decrease-btn" class="stepper-btn mini">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                                <path d="M19 13H5v-2h14v2z" />
+                            </svg>
+                        </button>
+                        <div class="duration-display" id="duration-display">6.0 s</div>
+                        <button id="increase-btn" class="stepper-btn mini">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
-                <div class="stepper-wrapper small">
-                    <button id="decrease-btn" class="stepper-btn mini">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-                            <path d="M19 13H5v-2h14v2z" />
+
+                <div class="setting-item">
+                    <div class="setting-label">
+                        <span>Sounds & Feedback</span>
+                    </div>
+                    <button id="audio-btn" class="icon-btn" aria-label="Toggle Audio">
+                        <!-- Icon will be set by JS -->
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                            <path
+                                d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
                         </svg>
                     </button>
-                    <div class="duration-display" id="duration-display">6.0 s</div>
-                    <button id="increase-btn" class="stepper-btn mini">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
-                        </svg>
-                    </button>
                 </div>
-            </div>
 
-            <div class="setting-item">
-                <div class="setting-label">
-                    <span>Sounds & Feedback</span>
+                <div class="setting-footer">
+                    <small>v1.3 • Box Breathing App</small>
                 </div>
-                <button id="audio-btn" class="icon-btn" aria-label="Toggle Audio">
-                    <!-- Icon will be set by JS -->
-                    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-                        <path
-                            d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
-                    </svg>
-                </button>
-            </div>
-
-            <div class="setting-footer">
-                <small>v1.2 • Box Breathing App</small>
             </div>
         </div>
     </div>
