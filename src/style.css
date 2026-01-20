@@ -685,7 +685,7 @@ button.stop:hover {
 
 /* Force controls to new line on mobile for better touch targets */
 /* Mobile Layout Refinements */
-@media (max-width: 480px) {
+@media (max-width: 768px) {
 
     /* Push first item down so it's not behind the sticky header */
     .setting-item:first-of-type {
@@ -707,40 +707,42 @@ button.stop:hover {
         flex: 1;
         min-width: 0;
         margin-right: 12px;
-        /* Margin for spacing against toggle */
     }
 
-    /* VERTICAL FORCE: Use explicit class */
+    /* VERTICAL FORCE: Explicit Class - STRICT ENFORCEMENT */
     .setting-item.vertical-mobile {
+        display: flex !important;
         flex-direction: column !important;
-        align-items: flex-start !important;
+        align-items: stretch !important;
+        /* Stretch to fill width */
         justify-content: flex-start !important;
         height: auto !important;
-        min-height: 80px;
-        /* Give it space */
-        padding-bottom: 16px;
+        padding: 16px !important;
+        gap: 12px !important;
     }
 
     .setting-item.vertical-mobile .setting-label {
-        width: 100%;
-        margin-bottom: 8px;
-        margin-right: 0;
-        flex: none;
-        /* Do not grow/shrink in column mode */
+        width: 100% !important;
+        margin-bottom: 8px !important;
+        margin-right: 0 !important;
+        flex: none !important;
     }
 
     /* Full width controls in vertical mode */
     .setting-item.vertical-mobile .segmented-control,
     .setting-item.vertical-mobile .soundscape-grid,
     .setting-item.vertical-mobile .stepper-wrapper {
-        width: 100%;
-        max-width: none;
+        width: 100% !important;
+        max-width: none !important;
+        flex: none !important;
+        margin-top: 4px;
     }
 
     /* Optimization for controls */
     .stepper-wrapper.small {
         display: flex;
         justify-content: space-between;
+        align-items: center;
         width: 100%;
         background: rgba(255, 255, 255, 0.05);
         padding: 4px;
@@ -750,11 +752,14 @@ button.stop:hover {
     .soundscape-grid {
         justify-content: space-between;
         overflow-x: auto;
+        padding-bottom: 4px;
+        /* Space for scrollbar if needed */
     }
 
     .sound-btn {
         flex: 1;
-        min-width: 0;
+        min-width: 60px;
+        /* Prevent crushing */
     }
 }
 
