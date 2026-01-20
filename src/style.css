@@ -771,17 +771,6 @@ button.stop:hover {
     }
 }
 
-/* Exception for full-width controls like Pattern/Soundscape if needed */
-.setting-item:has(#pattern-selector),
-.setting-item:has(#soundscape-selector) {
-    flex-direction: column;
-    align-items: flex-start;
-}
-
-.setting-item:has(#pattern-selector) .segmented-control,
-.setting-item:has(#soundscape-selector) .soundscape-grid {
-    width: 100%;
-}
 
 .setting-label span {
     font-size: 1rem;
