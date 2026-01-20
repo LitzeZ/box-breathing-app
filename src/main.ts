@@ -560,36 +560,28 @@ class BoxBreathingApp {
         oscillator.connect(gainNode);
         gainNode.connect(this.audioContext.destination);
 
-        // Pitch Logic: 
-        // Inhale (0): Ascending Pitch
-        // Exhale (2 in Box, 1 in Simple): Descending Pitch
-        // Holds: Steady
-
+        // Reverted to steady tones based on user feedback
         const now = this.audioContext.currentTime;
         const preset = this.config.presets.find(p => p.id === this.state.currentPresetId)!;
         const phaseName = preset.phases[phaseIndex];
 
         gainNode.gain.setValueAtTime(0, now);
-        gainNode.gain.linearRampToValueAtTime(0.4, now + 0.1);
-        gainNode.gain.exponentialRampToValueAtTime(0.001, now + 2.0);
+        gainNode.gain.linearRampToValueAtTime(0.3, now + 0.1);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
 
         oscillator.type = 'sine';
 
         if (phaseName === "Inhale") {
-            // Low to High
-            oscillator.frequency.setValueAtTime(196.00, now); // G3
-            oscillator.frequency.linearRampToValueAtTime(392.00, now + 2.0); // G4
+            oscillator.frequency.value = 174.61; // F3
         } else if (phaseName === "Exhale") {
-            // High to Low
-            oscillator.frequency.setValueAtTime(329.63, now); // E4
-            oscillator.frequency.linearRampToValueAtTime(164.81, now + 2.0); // E3
+            oscillator.frequency.value = 130.81; // C3
         } else {
-            // Hold - Steady Tone
-            oscillator.frequency.value = 261.63; // C4
+            // Hold
+            oscillator.frequency.value = 146.83; // D3
         }
 
         oscillator.start(now);
-        oscillator.stop(now + 2.0);
+        oscillator.stop(now + 1.5);
     }
 
     // --- Soundscape Generation (Pink/Brown Noise) ---
