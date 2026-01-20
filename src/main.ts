@@ -134,6 +134,13 @@ class BoxBreathingApp {
                 phases: ["Inhale", "Hold", "Exhale"],
                 phaseClasses: ["inhale", "hold", "exhale"],
                 ratios: [4, 2, 4] // Coherence 4-2-4
+            },
+            {
+                id: 'simple',
+                name: 'Simple',
+                phases: ["Inhale", "Exhale"],
+                phaseClasses: ["inhale", "exhale"],
+                ratios: [1, 1] // Balanced 
             }
         ];
 

@@ -1034,3 +1034,40 @@ body.zen-mode .container {
         display: flex !important;
     }
 }
+/* FIXED HEADER LAYOUT OPTIMIZATION */
+.settings-content-scroll {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 4px; /* Tiny padding to prevent scrollbar clip */
+    
+    /* Ensure scrollbar styling matches */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+/* Redefine Header for Fixed Layout */
+.settings-header {
+    flex-shrink: 0;
+    position: relative !important; /* No longer sticky inside, just top block */
+    z-index: 10 !important;
+    background: transparent !important; /* Can be transparent now if outside scroll area */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 0 !important;
+    padding-bottom: 16px !important;
+}
+
+/* Card Update */
+.settings-card {
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important; /* Prevent double scroll */
+    max-height: 80dvh !important; /* Ensure fixed height constraints */
+    padding-bottom: 0 !important; /* Remove bottom padding to let content scroll flush */
+}
+
+/* Ensure footer has space */
+.settings-footer {
+    padding: 20px 0;
+    flex-shrink: 0;
+}
