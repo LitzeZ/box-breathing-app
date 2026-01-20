@@ -474,18 +474,38 @@ class BoxBreathingApp {
         const now = performance.now();
         const elapsed = (now - this.state.phaseStartTime) / 1000;
 
-        // Use ratio logic if implemented, for now assuming equal ratio because logic was simpler before.
-        // But for Simple Mode (Inhale/Exhale) we might want 4-6 ratio? 
-        // For now adhering to task: "4-4 (Coherent) or 4-6" -> Let's stick to Global Duration for simplicity first iteration.
-        // We will treat baseDuration as the duration of *one phase*.
+        // Check if phase is complete
+        const preset = this.config.presets.find(p => p.id === this.state.currentPresetId)!;
+        const currentRatio = preset.ratios[this.state.currentPhase];
+        // Ensure baseDuration applies to ratio 1. So if ratio is 4, duration is baseDuration * 4 (if base is 1s "unit")
+        // OR: User sets "Duration per Phase" (defaults 6s). 
+        // Interpretation: "Duration per Phase" usually implies the average or the '1' unit.
+        // Let's assume user setting (e.g. 4s) is the '1' unit.
+        // So 4-7-8 would be: Inhale 4s, Hold 7s, Exhale 8s IF ratios are 1-1.75-2?
+        // NO. The standard is "4-7-8 seconds". Box is "4-4-4-4 seconds".
+        // The User setting is "Duration per Phase". In Box breathing, this is 4s (or 6s default).
+        // For 4-7-8, the setting is less clear.
+        // Let's interpret baseDuration as the "Inhale" duration (Ratio 4).
+        // Then normalize ratios relative to the first phase (Inhale).
+        // Actually, simplest UX: baseDuration = length of the '1' ratio unit? 
+        // No, user sees "6.0s". If they switch to Relax (4-7-8), 6s Inhale (4 units) -> Hold 10.5s -> Exhale 12s? 
+        // Let's treat baseDuration as the duration of the current phase if ratios were equal.
+        // Better: Treat baseDuration as the duration of the 1st phase (Inhale) and scale others.
+        // REVISION: The `ratios` array in presets (e.g., [4, 7, 8]) represents relative time.
+        // If user sets "4.0s", that should map to the "4" in "4-7-8"? 
+        // Yes. So unit = baseDuration / ratio[0].
 
-        if (elapsed >= this.state.baseDuration) {
+        const unitDuration = this.state.baseDuration / preset.ratios[0];
+        const phaseDuration = unitDuration * currentRatio;
+
+        if (elapsed >= phaseDuration) {
             this.nextPhase();
         } else {
-            this.updateUI(elapsed);
+            this.updateUI(elapsed, phaseDuration);
         }
         this.state.animationFrameId = requestAnimationFrame(() => this.loop());
     }
+
 
     nextPhase() {
         const preset = this.config.presets.find(p => p.id === this.state.currentPresetId)!;
@@ -509,11 +529,11 @@ class BoxBreathingApp {
         } catch (e) { console.warn("Audio feedback error:", e); }
     }
 
-    updateUI(elapsed: number) {
-        const remaining = Math.max(0, this.state.baseDuration - elapsed);
+    updateUI(elapsed: number, phaseDuration: number) {
+        const remaining = Math.max(0, phaseDuration - elapsed);
         this.dom.countdown.textContent = Math.ceil(remaining).toString() || "";
 
-        const phaseProgress = elapsed / this.state.baseDuration;
+        const phaseProgress = elapsed / phaseDuration;
         const t = Math.max(0, Math.min(1, phaseProgress));
 
         // Animation Logic based on Preset
@@ -544,9 +564,17 @@ class BoxBreathingApp {
         this.dom.circle.style.transform = `scale(${scale}) translateZ(0)`;
 
         // Progress Ring Calculation
-        const totalDuration = this.state.baseDuration * preset.phases.length;
-        // Total elapsed in cycle = (currentPhase * baseDuration) + elapsed
-        const cycleProgressTime = (this.state.currentPhase * this.state.baseDuration) + elapsed;
+        // Calculate total cycle duration based on ratios
+        const unitDuration = this.state.baseDuration / preset.ratios[0];
+        const totalDuration = preset.ratios.reduce((a, b) => a + b, 0) * unitDuration;
+
+        // Calculate accumulated time for previous phases
+        let timePrior = 0;
+        for (let i = 0; i < this.state.currentPhase; i++) {
+            timePrior += preset.ratios[i] * unitDuration;
+        }
+
+        const cycleProgressTime = timePrior + elapsed;
         const cycleProgress = cycleProgressTime / totalDuration;
 
         const offset = this.config.circleCircumference * (1 - cycleProgress);
@@ -558,11 +586,42 @@ class BoxBreathingApp {
             const sessionRemaining = Math.max(0, Math.ceil((this.state.sessionEndTime - now) / 1000));
             if (sessionRemaining <= 0) {
                 this.updateStreak();
+                this.playGong(); // END OF SESSION SOUND
                 this.stop();
                 return;
             }
             this.updateSessionDisplay();
         }
+    }
+
+    playGong() {
+        if (!this.audioContext || this.state.isMuted) return;
+        if (this.audioContext.state === 'suspended') this.audioContext.resume();
+
+        const now = this.audioContext.currentTime;
+
+        // Complex Gong Synthesis (Fundamental + Harmonics)
+        const freqs = [180, 240, 320, 560];
+        const gains = [0.4, 0.3, 0.2, 0.1];
+        const decays = [3.0, 2.5, 2.0, 4.0];
+
+        freqs.forEach((f, i) => {
+            const osc = this.audioContext!.createOscillator();
+            const gain = this.audioContext!.createGain();
+
+            osc.frequency.value = f;
+            osc.type = i === 0 ? 'triangle' : 'sine'; // Fundamental has more body
+
+            gain.gain.setValueAtTime(0, now);
+            gain.gain.linearRampToValueAtTime(gains[i], now + 0.05); // Attack
+            gain.gain.exponentialRampToValueAtTime(0.001, now + decays[i]); // Decay
+
+            osc.connect(gain);
+            gain.connect(this.audioContext!.destination);
+
+            osc.start(now);
+            osc.stop(now + decays[i] + 0.1);
+        });
     }
 
     playPhaseSound(phaseIndex: number) {
