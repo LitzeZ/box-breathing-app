@@ -174,7 +174,7 @@ class BoxBreathingApp {
 
         // 1. Pattern Selector
         const patternItem = document.createElement('div');
-        patternItem.className = 'setting-item vertical-mobile';
+        patternItem.className = 'setting-item mobile-layout-fix';
         patternItem.innerHTML = `
             <div class="setting-label">
                 <span>Pattern</span>
@@ -191,7 +191,7 @@ class BoxBreathingApp {
 
         // 2. Soundscape Selector
         const soundItem = document.createElement('div');
-        soundItem.className = 'setting-item vertical-mobile';
+        soundItem.className = 'setting-item mobile-layout-fix';
         soundItem.innerHTML = `
              <div class="setting-label" style="flex: 0 0 100%;">
                 <span>Soundscape</span>

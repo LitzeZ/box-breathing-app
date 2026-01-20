@@ -974,3 +974,57 @@ body.zen-mode .container {
 .streak-badge.hidden {
     display: none;
 }
+/* NUCLEAR FIX FOR MOBILE LAYOUT */
+@media (max-width: 768px) {
+    .setting-item.mobile-layout-fix {
+        /* Reset EVERYTHING */
+        display: block !important;
+        float: none !important;
+        position: relative !important;
+        
+        /* Flex Child Reset */
+        flex: 0 0 auto !important;
+        flex-shrink: 0 !important;
+        align-self: stretch !important;
+        
+        /* Expansion */
+        width: 100% !important;
+        height: auto !important;
+        min-height: 100px !important; /* Force a minimum size */
+        
+        /* Spacing */
+        margin-top: 5px !important;
+        margin-bottom: 25px !important;
+        padding-bottom: 20px !important;
+        
+        /* BFC */
+        overflow: visible !important; 
+    }
+
+    /* Force Children to Stack */
+    .setting-item.mobile-layout-fix > * {
+        display: block !important;
+        width: 100% !important;
+        margin-bottom: 10px !important;
+        position: relative !important;
+    }
+    
+    /* Specific Child Fixes */
+    .setting-item.mobile-layout-fix .setting-label {
+        margin-bottom: 15px !important;
+    }
+    
+    .setting-item.mobile-layout-fix .stepper-wrapper {
+        display: flex !important; /* Keep stepper btns horizontal */
+        justify-content: space-between !important;
+    }
+    
+    .setting-item.mobile-layout-fix .soundscape-grid {
+        display: flex !important; /* Keep sound grid horizontal */
+        overflow-x: auto !important;
+    }
+    
+    .setting-item.mobile-layout-fix .segmented-control {
+        display: flex !important;
+    }
+}
