@@ -615,7 +615,8 @@ button.stop:hover {
         position: sticky;
         top: 0;
         z-index: 20;
-        background: rgba(23, 28, 33, 0.98);
+        background: #171c21;
+        /* Solid background matching card theme */
         /* Opaque background to hide scrolling content */
         border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         /* Separator */
@@ -974,6 +975,7 @@ body.zen-mode .container {
 .streak-badge.hidden {
     display: none;
 }
+
 /* NUCLEAR FIX FOR MOBILE LAYOUT */
 @media (max-width: 768px) {
     .setting-item.mobile-layout-fix {
@@ -981,49 +983,52 @@ body.zen-mode .container {
         display: block !important;
         float: none !important;
         position: relative !important;
-        
+
         /* Flex Child Reset */
         flex: 0 0 auto !important;
         flex-shrink: 0 !important;
         align-self: stretch !important;
-        
+
         /* Expansion */
         width: 100% !important;
         height: auto !important;
-        min-height: 100px !important; /* Force a minimum size */
-        
+        min-height: 100px !important;
+        /* Force a minimum size */
+
         /* Spacing */
         margin-top: 5px !important;
         margin-bottom: 25px !important;
         padding-bottom: 20px !important;
-        
+
         /* BFC */
-        overflow: visible !important; 
+        overflow: visible !important;
     }
 
     /* Force Children to Stack */
-    .setting-item.mobile-layout-fix > * {
+    .setting-item.mobile-layout-fix>* {
         display: block !important;
         width: 100% !important;
         margin-bottom: 10px !important;
         position: relative !important;
     }
-    
+
     /* Specific Child Fixes */
     .setting-item.mobile-layout-fix .setting-label {
         margin-bottom: 15px !important;
     }
-    
+
     .setting-item.mobile-layout-fix .stepper-wrapper {
-        display: flex !important; /* Keep stepper btns horizontal */
+        display: flex !important;
+        /* Keep stepper btns horizontal */
         justify-content: space-between !important;
     }
-    
+
     .setting-item.mobile-layout-fix .soundscape-grid {
-        display: flex !important; /* Keep sound grid horizontal */
+        display: flex !important;
+        /* Keep sound grid horizontal */
         overflow-x: auto !important;
     }
-    
+
     .setting-item.mobile-layout-fix .segmented-control {
         display: flex !important;
     }

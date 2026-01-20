@@ -122,11 +122,18 @@ class BoxBreathingApp {
                 ratios: [1, 1, 1, 1] // Equal duration
             },
             {
-                id: 'simple',
-                name: 'Simple',
-                phases: ["Inhale", "Exhale"],
-                phaseClasses: ["inhale", "exhale"],
-                ratios: [1, 1] // Balanced 
+                id: 'relax',
+                name: 'Relax',
+                phases: ["Inhale", "Hold", "Exhale"],
+                phaseClasses: ["inhale", "hold", "exhale"],
+                ratios: [4, 7, 8] // 4-7-8 Technique
+            },
+            {
+                id: 'calm',
+                name: 'Calm',
+                phases: ["Inhale", "Hold", "Exhale"],
+                phaseClasses: ["inhale", "hold", "exhale"],
+                ratios: [4, 2, 4] // Coherence 4-2-4
             }
         ];
 
