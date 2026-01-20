@@ -792,6 +792,50 @@ class BoxBreathingApp {
         this.soundscapeSource = noise;
     }
 
+    createForestWind(ctx: AudioContext, output: GainNode) {
+        // Brown Noise for Wind
+        const bufferSize = 2 * ctx.sampleRate;
+        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        let lastOut = 0;
+
+        for (let i = 0; i < bufferSize; i++) {
+            const white = Math.random() * 2 - 1;
+            data[i] = (lastOut + (0.02 * white)) / 1.02;
+            lastOut = data[i];
+            data[i] *= 3.5;
+        }
+
+        const noise = ctx.createBufferSource();
+        noise.buffer = buffer;
+        noise.loop = true;
+
+        // Modulate volume for gusty wind effect
+        const waveLFO = ctx.createOscillator();
+        waveLFO.type = 'sine';
+        waveLFO.frequency.value = 0.05; // 20 seconds, very slow for wind
+
+        const lfoGain = ctx.createGain();
+        lfoGain.gain.value = 0.4; // Depth of gusts
+
+        // Connect: LFO -> ModGain -> MainGain.gain
+        waveLFO.connect(lfoGain);
+        lfoGain.connect(output.gain);
+
+        // Filter: Highpass to remove rumbles (leaves rustling)
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'highpass';
+        filter.frequency.value = 200;
+
+        noise.connect(filter);
+        filter.connect(output);
+
+        noise.start(0);
+        waveLFO.start(0);
+
+        this.soundscapeSource = noise;
+    }
+
     toggleAudio() {
         this.state.isMuted = !this.state.isMuted;
         this.dom.audioBtn.classList.toggle("muted", this.state.isMuted);
