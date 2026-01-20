@@ -711,21 +711,19 @@ button.stop:hover {
 
     /* VERTICAL FORCE: Explicit Class - STRICT ENFORCEMENT */
     .setting-item.vertical-mobile {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: stretch !important;
-        /* Stretch to fill width */
-        justify-content: flex-start !important;
+        display: block !important;
+        /* Move away from Flex to avoid collapse */
         height: auto !important;
         padding: 16px !important;
-        gap: 12px !important;
+        overflow: hidden !important;
+        /* Force BFC to contain floats/margins */
     }
 
     .setting-item.vertical-mobile .setting-label {
         width: 100% !important;
-        margin-bottom: 8px !important;
+        margin-bottom: 12px !important;
         margin-right: 0 !important;
-        flex: none !important;
+        display: block !important;
     }
 
     /* Full width controls in vertical mode */
@@ -734,8 +732,9 @@ button.stop:hover {
     .setting-item.vertical-mobile .stepper-wrapper {
         width: 100% !important;
         max-width: none !important;
-        flex: none !important;
         margin-top: 4px;
+        display: flex !important;
+        /* Ensure internal flex works */
     }
 
     /* Optimization for controls */
