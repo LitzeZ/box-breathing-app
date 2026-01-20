@@ -712,11 +712,10 @@ button.stop:hover {
     /* VERTICAL FORCE: Explicit Class - STRICT ENFORCEMENT */
     .setting-item.vertical-mobile {
         display: block !important;
-        /* Move away from Flex to avoid collapse */
         height: auto !important;
         padding: 16px !important;
-        overflow: hidden !important;
-        /* Force BFC to contain floats/margins */
+        overflow: visible !important;
+        /* Allow buttons/shadows to show */
     }
 
     .setting-item.vertical-mobile .setting-label {
