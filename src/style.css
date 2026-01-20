@@ -614,9 +614,10 @@ button.stop:hover {
         padding: 24px 24px 16px 24px;
         position: sticky;
         top: 0;
-        z-index: 20;
-        background: #171c21;
-        /* Solid background matching card theme */
+        z-index: 999 !important;
+        /* Ensure on top */
+        background: #171c21 !important;
+        /* Force OPAQUE background */
         /* Opaque background to hide scrolling content */
         border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         /* Separator */
