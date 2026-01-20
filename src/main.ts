@@ -113,10 +113,11 @@ class BoxBreathingApp {
         };
 
         // Define Presets
-        const presets: BreathingPattern[] = [
+        const presets: any[] = [
             {
                 id: 'box',
                 name: 'Box',
+                description: 'Focus & Stress Relief',
                 phases: ["Inhale", "Hold", "Exhale", "Hold"],
                 phaseClasses: ["inhale", "hold", "exhale", "hold-small"],
                 ratios: [1, 1, 1, 1] // Equal duration
@@ -124,6 +125,7 @@ class BoxBreathingApp {
             {
                 id: 'relax',
                 name: 'Relax',
+                description: 'Sleep Aid (4-7-8)',
                 phases: ["Inhale", "Hold", "Exhale"],
                 phaseClasses: ["inhale", "hold", "exhale"],
                 ratios: [4, 7, 8] // 4-7-8 Technique
@@ -131,6 +133,7 @@ class BoxBreathingApp {
             {
                 id: 'calm',
                 name: 'Calm',
+                description: 'Balance (4-2-4)',
                 phases: ["Inhale", "Hold", "Exhale"],
                 phaseClasses: ["inhale", "hold", "exhale"],
                 ratios: [4, 2, 4] // Coherence 4-2-4
@@ -138,6 +141,7 @@ class BoxBreathingApp {
             {
                 id: 'simple',
                 name: 'Simple',
+                description: 'Natural Breathing',
                 phases: ["Inhale", "Exhale"],
                 phaseClasses: ["inhale", "exhale"],
                 ratios: [1, 1] // Balanced 
@@ -192,7 +196,14 @@ class BoxBreathingApp {
         patternItem.innerHTML = `
             <div class="setting-label">
                 <span>Pattern</span>
-                <small>Mode</small>
+                <button class="icon-btn tiny" id="pattern-info-btn" aria-label="Pattern Info">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                </button>
+            </div>
+            <div id="pattern-description" class="pattern-description">
+                 Focus & Stress Relief
             </div>
             <div class="segmented-control" id="pattern-selector">
                 ${this.config.presets.map(p =>
@@ -218,9 +229,9 @@ class BoxBreathingApp {
                         <svg viewBox="0 0 24 24"><path d="M4.03 12c.73-3.04 3.46-5.28 6.72-5.28 2.37 0 4.45 1.18 5.74 2.97.45-.16.91-.25 1.39-.27L17.85 7C17.7 5.09 16.36 3.46 14.59 2.76A8 8 0 0 0 4 11.23L4.03 12zM12.92 7.02c-.08-.01-.16-.02-.24-.02-3.1 0-5.63 2.53-5.63 5.63 0 .42.06.82.14 1.21l1.76-1.76c-.05-.33-.09-.67-.09-1.01 0-2.31 1.76-4.2 4.07-4.2.34 0 .68.04 1.01.09l-1.02-1.02v.08zM19 19h-6c-.55 0-1-.45-1-1s.45-1 1-1h6c.55 0 1 .45 1 1s-.45 1-1 1zm-8 0H5c-.55 0-1-.45-1-1s.45-1 1-1h6c.55 0 1 .45 1 1s-.45 1-1 1zm4-4h-6c-.55 0-1-.45-1-1s.45-1 1-1h6c.55 0 1 .45 1 1s-.45 1-1 1zm4-4h-6c-.55 0-1-.45-1-1s.45-1 1-1h6c.55 0 1 .45 1 1s-.45 1-1 1z"/></svg>
                         <span>Rain</span>
                     </button>
-                    <button class="sound-btn" data-id="beach">
-                        <svg viewBox="0 0 24 24"><path d="M14 6l-3.75 5 2.85 3.8-1.6 1.2C9.81 13.75 7 10 7 10l-6 8h22L14 6z"/></svg>
-                        <span>Beach</span>
+                    <button class="sound-btn" data-id="wind">
+                        <svg viewBox="0 0 24 24"><path d="M12.65 19.16l-2.77-3.92a2.33 2.33 0 0 0-3.8 0l-2.77 3.92a.5.5 0 0 0 .41.79h8.52a.5.5 0 0 0 .41-.79zm5.32 0l-1.6-2.26-1.6 2.26a.5.5 0 0 0 .41.79h2.38a.5.5 0 0 0 .41-.79zm-7.97-6.32l-1.6-2.26-1.6 2.26a.5.5 0 0 0 .41.79h2.38a.5.5 0 0 0 .41-.79zM17 10l-3.75 5 2.85 3.8-1.6 1.2C12.81 17.75 10 14 10 14l-6 8h22L17 10z" style="display:none;"/><path d="M19.18 10.99c-2.43 0-4.63 1.39-5.75 3.44l-1.46-2.07c1.37-2.58 4.07-4.37 7.21-4.37 1.63 0 3.16.51 4.45 1.38l1.45-2.06A14.9 14.9 0 0 0 19.18 6C13.84 6 9.17 9 6.8 13.52L5.86 12.2c1.78-4 5.75-6.86 10.4-7.14V3l4 4-4 4V9.07c-3.13.25-5.84 2.05-7.33 4.67l-1.46-2.07c1.88-3.05 5.16-5.09 8.91-5.09 1.13 0 2.21.23 3.23.64l1.45-2.06c-1.35-.55-2.8-.87-4.31-.87z"/></svg>
+                        <span>Wind</span>
                     </button>
                 </div>
             </div>
@@ -293,7 +304,25 @@ class BoxBreathingApp {
 
             // Logic Update
             this.setPreset(target.dataset.id!);
+
+            // Description Update
+            const preset = this.config.presets.find(p => p.id === target.dataset.id);
+            const patternsContainer = this.dom.patternContainer!.parentElement!;
+            const descEl = patternsContainer.querySelector('#pattern-description');
+            if (descEl && preset) descEl.textContent = (preset as any).description;
         });
+
+        // Toggle Description Visibility
+        // Locate elements via DOM as they were injected dynamically in a previous method
+        // Wrapper is parent of patternContainer
+        const patternsWrapper = this.dom.patternContainer?.parentElement;
+        if (patternsWrapper) {
+            const infoBtn = patternsWrapper.querySelector('#pattern-info-btn');
+            const descEl = patternsWrapper.querySelector('#pattern-description');
+            infoBtn?.addEventListener('click', () => {
+                descEl?.classList.toggle('visible');
+            });
+        }
 
         // New: Soundscape Selection
         this.dom.soundscapeContainer?.addEventListener('click', (e) => {
@@ -670,8 +699,8 @@ class BoxBreathingApp {
 
         if (this.state.currentSoundscapeId === 'rain') {
             this.createPinkNoise(ctx, this.soundscapeGain);
-        } else if (this.state.currentSoundscapeId === 'beach') {
-            this.createBrownNoise(ctx, this.soundscapeGain);
+        } else if (this.state.currentSoundscapeId === 'wind') {
+            this.createForestWind(ctx, this.soundscapeGain);
         }
     }
 
