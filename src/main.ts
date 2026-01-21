@@ -177,21 +177,16 @@ class BoxBreathingApp {
         const patternItem = document.createElement('div');
         patternItem.className = 'setting-item mobile-layout-fix';
         patternItem.innerHTML = `
-            <div class="setting-label" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <div class="setting-label">
                 <span>Pattern Mode</span>
-                <button class="icon-btn tiny" id="pattern-info-btn" aria-label="Pattern Info">
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
-                    </svg>
-                </button>
-            </div>
-            <div id="pattern-description" class="pattern-description">
-                 Focus & Stress Relief
             </div>
             <div class="segmented-control" id="pattern-selector">
                 ${this.config.presets.map(p =>
             `<button class="segmented-btn ${p.id === this.state.currentPresetId ? 'active' : ''}" data-id="${p.id}">${p.name}</button>`
         ).join('')}
+            </div>
+            <div id="pattern-description" class="pattern-description">
+                 Focus & Stress Relief
             </div>
         `;
         durationSetting.insertAdjacentElement('afterend', patternItem);
@@ -266,17 +261,6 @@ class BoxBreathingApp {
             if (descEl && preset) descEl.textContent = (preset as any).description;
         });
 
-        // Toggle Description Visibility
-        // Locate elements via DOM as they were injected dynamically in a previous method
-        // Wrapper is parent of patternContainer
-        const patternsWrapper = this.dom.patternContainer?.parentElement;
-        if (patternsWrapper) {
-            const infoBtn = patternsWrapper.querySelector('#pattern-info-btn');
-            const descEl = patternsWrapper.querySelector('#pattern-description');
-            infoBtn?.addEventListener('click', () => {
-                descEl?.classList.toggle('visible');
-            });
-        }
 
         // Misc
         this.dom.circle.addEventListener("dblclick", () => this.startSession(15));

@@ -1037,24 +1037,14 @@ input:checked+.slider:before {
 /* Pattern Description */
 .pattern-description {
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.6);
-    margin-bottom: 12px;
-    margin-top: -8px;
-    display: none;
-    font-style: italic;
-    animation: fadeIn 0.2s ease;
-}
-
-.pattern-description.visible {
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 15px;
+    text-align: center;
     display: block;
-}
-
-.icon-btn.tiny {
-    width: 24px;
-    height: 24px;
-    padding: 0;
-    margin-left: 8px;
-    opacity: 0.7;
+    /* Always visible */
+    font-style: italic;
+    min-height: 1.2em;
+    transition: opacity 0.3s ease;
 }
 
 /* Ensure setting label can hold extra content */
