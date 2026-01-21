@@ -899,71 +899,26 @@ input:checked+.slider:before {
 
 /* Soundscape Toggle styling */
 .soundscape-grid {
-    display: flex;
-    gap: 10px;
-    margin-top: 5px;
-}
 
-.sound-btn {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid transparent;
-    border-radius: 12px;
-    padding: 10px;
-    cursor: pointer;
-    transition: all 0.2s;
-    opacity: 0.7;
-}
+    /* Zen Mode Hidden State (Slow Fade) */
+    body.zen-mode .app-header,
+    body.zen-mode .controls,
+    body.zen-mode .settings-overlay {
+        opacity: 0 !important;
+        pointer-events: none !important;
+        transition: opacity 3.0s ease-out;
+        /* Slower fade out */
+    }
 
-.sound-btn svg {
-    width: 24px;
-    height: 24px;
-    fill: currentColor;
-}
+    body.zen-mode .container {
+        background: transparent !important;
+        border-color: transparent !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        transition: all 3.0s ease-out;
+    }
 
-.sound-btn span {
-    font-size: 0.75rem;
-}
-
-.sound-btn.active {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.3);
-    opacity: 1;
-    color: #fff;
-}
-
-/* Zen Mode Hidden State (Slow Fade) */
-body.zen-mode .app-header,
-body.zen-mode .controls,
-body.zen-mode .settings-overlay {
-    opacity: 0 !important;
-    pointer-events: none !important;
-    transition: opacity 3.0s ease-out;
-    /* Slower fade out */
-}
-
-body.zen-mode .container {
-    background: transparent !important;
-    border-color: transparent !important;
-    box-shadow: none !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    transition: all 3.0s ease-out;
-}
-
-/* Streak Badge */
-.streak-badge {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(255, 179, 0, 0.15);
-    /* Gold tint */
-    color: #ffb300;
-    padding: 6px 12px;
     border-radius: 20px;
     font-size: 0.9rem;
     font-weight: 500;
@@ -1034,13 +989,15 @@ body.zen-mode .container {
         display: flex !important;
     }
 }
+
 /* FIXED HEADER LAYOUT OPTIMIZATION */
 .settings-content-scroll {
     flex: 1 1 auto;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    padding: 0 4px; /* Tiny padding to prevent scrollbar clip */
-    
+    padding: 0 4px;
+    /* Tiny padding to prevent scrollbar clip */
+
     /* Ensure scrollbar styling matches */
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
@@ -1049,9 +1006,11 @@ body.zen-mode .container {
 /* Redefine Header for Fixed Layout */
 .settings-header {
     flex-shrink: 0;
-    position: relative !important; /* No longer sticky inside, just top block */
+    position: relative !important;
+    /* No longer sticky inside, just top block */
     z-index: 10 !important;
-    background: transparent !important; /* Can be transparent now if outside scroll area */
+    background: transparent !important;
+    /* Can be transparent now if outside scroll area */
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     margin-bottom: 0 !important;
     padding-bottom: 16px !important;
@@ -1061,9 +1020,12 @@ body.zen-mode .container {
 .settings-card {
     display: flex !important;
     flex-direction: column !important;
-    overflow: hidden !important; /* Prevent double scroll */
-    max-height: 80dvh !important; /* Ensure fixed height constraints */
-    padding-bottom: 0 !important; /* Remove bottom padding to let content scroll flush */
+    overflow: hidden !important;
+    /* Prevent double scroll */
+    max-height: 80dvh !important;
+    /* Ensure fixed height constraints */
+    padding-bottom: 0 !important;
+    /* Remove bottom padding to let content scroll flush */
 }
 
 /* Ensure footer has space */
@@ -1082,6 +1044,7 @@ body.zen-mode .container {
     font-style: italic;
     animation: fadeIn 0.2s ease;
 }
+
 .pattern-description.visible {
     display: block;
 }
