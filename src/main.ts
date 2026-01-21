@@ -544,28 +544,32 @@ class BoxBreathingApp {
 
         const now = this.audioContext.currentTime;
 
-        // Complex Gong Synthesis (Fundamental + Harmonics)
-        const freqs = [180, 240, 320, 560];
-        const gains = [0.4, 0.3, 0.2, 0.1];
-        const decays = [3.0, 2.5, 2.0, 4.0];
+        // Deep Zen Tone - Minimalist & Rounded
+        // Fundamental: Low sine for depth
+        const osc = this.audioContext.createOscillator();
+        const gain = this.audioContext.createGain();
 
-        freqs.forEach((f, i) => {
-            const osc = this.audioContext!.createOscillator();
-            const gain = this.audioContext!.createGain();
+        // 110Hz = A2 (Deep but audible on phones) - or maybe lower? 
+        // User asked for "tief" (deep). 90Hz is F#2. Let's go ~100Hz.
+        osc.frequency.value = 100;
+        osc.type = 'triangle'; // Triangle has a bit more warmth than pure sine but still clean
 
-            osc.frequency.value = f;
-            osc.type = i === 0 ? 'triangle' : 'sine'; // Fundamental has more body
+        // Smooth Envelope
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.linearRampToValueAtTime(0.6, now + 0.2); // Soft attack
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 5.0); // Long, meditative tail
 
-            gain.gain.setValueAtTime(0, now);
-            gain.gain.linearRampToValueAtTime(gains[i], now + 0.05); // Attack
-            gain.gain.exponentialRampToValueAtTime(0.001, now + decays[i]); // Decay
+        // Lowpass Filter to round off the triangle edges -> "Cool & Simple"
+        const filter = this.audioContext.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 300;
 
-            osc.connect(gain);
-            gain.connect(this.audioContext!.destination);
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.audioContext.destination);
 
-            osc.start(now);
-            osc.stop(now + decays[i] + 0.1);
-        });
+        osc.start(now);
+        osc.stop(now + 6.0);
     }
 
     playPhaseSound(phaseIndex: number) {
