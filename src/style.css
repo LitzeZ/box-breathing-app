@@ -989,6 +989,12 @@ body.zen-mode .container {
 
     /* Ensure scrollbar styling matches */
     scrollbar-width: thin;
+
+    /* Layout for Items */
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    /* <--- THIS IS THE FIX */
     scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
 }
 
