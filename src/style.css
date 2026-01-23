@@ -582,8 +582,8 @@ button.stop:hover {
     transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    /* Reduced gap slightly */
+    gap: 24px;
+    /* Increased gap for better separation */
 
     /* Safe Area for internal scrolling content if needed */
     padding-bottom: max(24px, env(safe-area-inset-bottom));
@@ -939,10 +939,11 @@ body.zen-mode .container {
         min-height: 100px !important;
         /* Force a minimum size */
 
-        /* Spacing */
-        margin-top: 5px !important;
-        margin-bottom: 25px !important;
-        padding-bottom: 20px !important;
+        /* Spacing - Relies on parent gap now */
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        padding-bottom: 16px !important;
+        /* Keep internal padding */
 
         /* BFC */
         overflow: visible !important;
