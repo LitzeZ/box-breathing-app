@@ -1,0 +1,44 @@
+/* 
+  Localizable.strings
+  BoxBreathing
+*/
+
+// Common
+"START" = "START";
+"STOP" = "STOPP";
+"LOADING..." = "LÄDT...";
+
+// Pattern Names
+// Keeping some names English as they are brand-like, or translating if standard terms
+"Box" = "Box";
+"Meditation" = "Meditation";
+"Calm" = "Ruhe";
+"Relax" = "Entspannung";
+"Simple" = "Einfach";
+"Unwind" = "Runterkommen";
+
+// Pattern Descriptions
+"Focus & Stress Relief" = "Fokus & Stressabbau";
+"Pure Timer" = "Reiner Timer";
+"Balance (4-2-4)" = "Balance (4-2-4)";
+"Sleep Aid (4-7-8)" = "Einschlafhilfe (4-7-8)";
+"Natural Breathing" = "Natürliche Atmung";
+"Deep Calm (1:2)" = "Tiefe Ruhe (1:2)";
+
+// Pattern Phases
+"Inhale" = "Einatmen";
+"Hold" = "Halten";
+"Exhale" = "Ausatmen";
+"Meditate" = "Meditieren";
+
+// Settings
+"Settings" = "Einstellungen";
+"Last Session" = "Letzte Sitzung";
+"Today" = "Heute";
+"Phase Duration" = "Phasendauer";
+"Speed of Inhale-Hold-Exhale" = "Geschwindigkeit der Phasen";
+"Focus Mode" = "Fokus-Modus";
+"Haptics" = "Haptik";
+"Sound" = "Ton";
+"Breathing Pattern" = "Atemtechnik";
+"LUNG iOS • v1.4" = "LUNG iOS • v1.4";
