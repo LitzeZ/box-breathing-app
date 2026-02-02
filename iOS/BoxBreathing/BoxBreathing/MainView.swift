@@ -32,7 +32,7 @@ struct MainView: View {
                     .foregroundColor(.white.opacity(0.9))
                     .opacity(engine.isZenMode && engine.isRunning ? engine.zenModeOpacity : 1.0) // Zen Mode: Smooth Fade
                     .animation(.easeInOut, value: engine.isRunning)
-                    .animation(.easeInOut(duration: 1.0), value: engine.zenModeOpacity)
+
                     .contentTransition(.numericText())
                     .animation(.easeInOut, value: engine.phaseName)
                 
@@ -84,7 +84,7 @@ struct MainView: View {
                         isRunning: engine.isRunning
                     )
                     .opacity(engine.isZenMode && engine.isRunning ? engine.zenModeOpacity : 1.0)
-                    .animation(.easeInOut(duration: 1.0), value: engine.zenModeOpacity)
+
                     
                     // Main Action Button
                     Button(action: {
@@ -112,7 +112,7 @@ struct MainView: View {
                     }
                     .disabled(!engine.isAudioReady)
                     .opacity(engine.isZenMode && engine.isRunning ? engine.zenModeOpacity : 1.0)
-                    .animation(.easeInOut(duration: 1.0), value: engine.zenModeOpacity)
+
                     
                     // Settings Button (Tap for Settings, Long Press for Focus Mode)
                     Image(systemName: "gearshape")
@@ -133,7 +133,7 @@ struct MainView: View {
                             }
                         }
                         .opacity(engine.isZenMode && engine.isRunning ? engine.zenModeOpacity : 1.0)
-                        .animation(.easeInOut(duration: 1.0), value: engine.zenModeOpacity)
+
                 }
                 
                 Spacer()
@@ -144,7 +144,7 @@ struct MainView: View {
         .statusBar(hidden: engine.isZenMode && engine.isRunning)
         .sheet(isPresented: $showSettings) { SettingsView(engine: engine) }
         .onTapGesture {
-            // In Zen Mode: First tap reveals UI, second tap stops session
+            // Zen Mode Running Logic
             if engine.isZenMode && engine.isRunning {
                 if engine.zenModeOpacity < 0.5 {
                     // UI is hidden, reveal it
@@ -153,8 +153,13 @@ struct MainView: View {
                     }
                 } else {
                     // UI is visible, stop session
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                     withAnimation { engine.toggle() }
                 }
+            } else {
+                // Standard Mode (or Zen Idle): Toggle Start/Stop
+                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                withAnimation { engine.toggle() }
             }
         }
     }

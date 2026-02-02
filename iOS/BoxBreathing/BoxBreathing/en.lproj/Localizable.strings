@@ -1,43 +1,48 @@
 /* 
   Localizable.strings
   BoxBreathing
+
+  English (Base)
 */
 
-// Common
-"START" = "START";
-"STOP" = "STOP";
-"LOADING..." = "LOADING...";
-
-// Pattern Names
-"Box" = "Box";
-"Meditation" = "Meditation";
-"Calm" = "Calm";
-"Relax" = "Relax";
-"Simple" = "Simple";
-"Unwind" = "Unwind";
-
-// Pattern Descriptions
-"Focus & Stress Relief" = "Focus & Stress Relief";
-"Pure Timer" = "Pure Timer";
-"Balance (4-2-4)" = "Balance (4-2-4)";
-"Sleep Aid (4-7-8)" = "Sleep Aid (4-7-8)";
-"Natural Breathing" = "Natural Breathing";
-"Deep Calm (1:2)" = "Deep Calm (1:2)";
-
-// Pattern Phases
-"Inhale" = "Inhale";
-"Hold" = "Hold";
-"Exhale" = "Exhale";
-"Meditate" = "Meditate";
-
-// Settings
+// SettingsView
 "Settings" = "Settings";
 "Last Session" = "Last Session";
 "Today" = "Today";
+"Breathing Pattern" = "Breathing Pattern";
 "Phase Duration" = "Phase Duration";
 "Speed of Inhale-Hold-Exhale" = "Speed of Inhale-Hold-Exhale";
 "Focus Mode" = "Focus Mode";
 "Haptics" = "Haptics";
 "Sound" = "Sound";
-"Breathing Pattern" = "Breathing Pattern";
-"LUNG iOS • v1.4" = "LUNG iOS • v1.4"; // Keep tech info English mostly, but fine to translate if needed
+"LUNG iOS • © 2026" = "LUNG iOS • © 2026";
+
+// GuideView Controls
+"Controls" = "Controls";
+"Swipe Timer" = "Swipe Timer";
+"Quickly adjust the session duration." = "Quickly adjust the session duration.";
+"Long press the settings gear to toggle UI visibility." = "Long press the settings gear to toggle UI visibility.";
+"Start / Stop" = "Start / Stop";
+"Tap anywhere on the screen." = "Tap anywhere on the screen.";
+
+// GuideView Patterns
+"Breathing Patterns" = "Breathing Patterns";
+"Box Breathing (1-1-1-1)" = "Box Breathing (1-1-1-1)";
+"Inhale, hold, exhale, hold – all the same length. The classic for instant clarity and nerves of steel. Perfect when you're feeling like a jittery squirrel on caffeine." = "Inhale, hold, exhale, hold – all the same length. The classic for instant clarity and nerves of steel. Perfect when you're feeling like a jittery squirrel on caffeine.";
+
+"Calm (4-2-4)" = "Calm (4-2-4)";
+"4 seconds in, 2 hold, 4 out. Gentle calm-down mode when you need to chill fast without breaking a sweat." = "4 seconds in, 2 hold, 4 out. Gentle calm-down mode when you need to chill fast without breaking a sweat.";
+
+"Relax (4-7-8)" = "Relax (4-7-8)";
+"4 in, 7 hold, 8 out. Dr. Weil's famous sleep hack. Works so well, folks often nod off before they even hit the 7-second count." = "4 in, 7 hold, 8 out. Dr. Weil's famous sleep hack. Works so well, folks often nod off before they even hit the 7-second count.";
+
+"Simple (1-1)" = "Simple (1-1)";
+"Even in and out breaths. The no-brainer for on-the-go or when your mind's doing loop-de-loops." = "Even in and out breaths. The no-brainer for on-the-go or when your mind's doing loop-de-loops.";
+
+"Unwind / Deep Calm (1-2)" = "Unwind / Deep Calm (1-2)";
+"Inhale for 1 part, exhale for 2. The quickest way to kick your chill mode into gear. Double exhale = double the relaxation vibes. Great for just \"blowing away\" that stress." = "Inhale for 1 part, exhale for 2. The quickest way to kick your chill mode into gear. Double exhale = double the relaxation vibes. Great for just \"blowing away\" that stress.";
+
+"Meditation" = "Meditation";
+"A no-fuss timer for zen sessions from 1 to 60 minutes, ending with a gentle \"time's up!\" nudge. Say goodbye to those sneaky \"just five more minutes\" traps." = "A no-fuss timer for zen sessions from 1 to 60 minutes, ending with a gentle \"time's up!\" nudge. Say goodbye to those sneaky \"just five more minutes\" traps.";
+
+"LUNG iOS • Guide" = "LUNG iOS • Guide";

@@ -1,44 +1,48 @@
 /* 
   Localizable.strings
   BoxBreathing
+
+  German
 */
 
-// Common
-"START" = "START";
-"STOP" = "STOPP";
-"LOADING..." = "LÄDT...";
-
-// Pattern Names
-// Keeping some names English as they are brand-like, or translating if standard terms
-"Box" = "Box";
-"Meditation" = "Meditation";
-"Calm" = "Ruhe";
-"Relax" = "Entspannung";
-"Simple" = "Einfach";
-"Unwind" = "Runterkommen";
-
-// Pattern Descriptions
-"Focus & Stress Relief" = "Fokus & Stressabbau";
-"Pure Timer" = "Reiner Timer";
-"Balance (4-2-4)" = "Balance (4-2-4)";
-"Sleep Aid (4-7-8)" = "Einschlafhilfe (4-7-8)";
-"Natural Breathing" = "Natürliche Atmung";
-"Deep Calm (1:2)" = "Tiefe Ruhe (1:2)";
-
-// Pattern Phases
-"Inhale" = "Einatmen";
-"Hold" = "Halten";
-"Exhale" = "Ausatmen";
-"Meditate" = "Meditieren";
-
-// Settings
+// SettingsView
 "Settings" = "Einstellungen";
-"Last Session" = "Letzte Sitzung";
+"Last Session" = "Letzte Session";
 "Today" = "Heute";
+"Breathing Pattern" = "Atemmuster";
 "Phase Duration" = "Phasendauer";
-"Speed of Inhale-Hold-Exhale" = "Geschwindigkeit der Phasen";
+"Speed of Inhale-Hold-Exhale" = "Geschwindigkeit der Atemzüge";
 "Focus Mode" = "Fokus-Modus";
 "Haptics" = "Haptik";
 "Sound" = "Ton";
-"Breathing Pattern" = "Atemtechnik";
-"LUNG iOS • v1.4" = "LUNG iOS • v1.4";
+"LUNG iOS • © 2026" = "LUNG iOS • © 2026";
+
+// GuideView Controls
+"Controls" = "Steuerung";
+"Swipe Timer" = "Timer wischen";
+"Quickly adjust the session duration." = "Passe die Dauer schnell an.";
+"Long press the settings gear to toggle UI visibility." = "Lange auf das Zahnrad drücken, um die Oberfläche auszublenden.";
+"Start / Stop" = "Start / Stopp";
+"Tap anywhere on the screen." = "Tippe irgendwo auf den Bildschirm.";
+
+// GuideView Patterns
+"Breathing Patterns" = "Atemmuster";
+"Box Breathing (1-1-1-1)" = "Box Atmung (1-1-1-1)";
+"Inhale, hold, exhale, hold – all the same length. The classic for instant clarity and nerves of steel. Perfect when you're feeling like a jittery squirrel on caffeine." = "Ein, Halten, Aus, Halten – alles gleich lang. Der Klassiker für sofortige Klarheit und Nerven aus Stahl. Perfekt, wenn du dich wie ein aufgedrehtes Eichhörnchen fühlst.";
+
+"Calm (4-2-4)" = "Ruhe (4-2-4)";
+"4 seconds in, 2 hold, 4 out. Gentle calm-down mode when you need to chill fast without breaking a sweat." = "4s Ein, 2s Halten, 4s Aus. Sanftes Runterkommen, wenn du schnell entspannen willst, ohne ins Schwitzen zu geraten.";
+
+"Relax (4-7-8)" = "Entspannung (4-7-8)";
+"4 in, 7 hold, 8 out. Dr. Weil's famous sleep hack. Works so well, folks often nod off before they even hit the 7-second count." = "4 Ein, 7 Halten, 8 Aus. Der berühmte Schlaf-Hack. Funktioniert so gut, dass viele wegdriften, noch bevor sie bei 7 sind.";
+
+"Simple (1-1)" = "Einfach (1-1)";
+"Even in and out breaths. The no-brainer for on-the-go or when your mind's doing loop-de-loops." = "Gleichmäßiges Ein- und Ausatmen. Der No-Brainer für unterwegs oder wenn dein Kopf Loopings dreht.";
+
+"Unwind / Deep Calm (1-2)" = "Abschalten (1-2)";
+"Inhale for 1 part, exhale for 2. The quickest way to kick your chill mode into gear. Double exhale = double the relaxation vibes. Great for just \"blowing away\" that stress." = "1 Teil Einatmen, 2 Teile Ausatmen. Der schnellste Weg in den Chill-Modus. Doppeltes Ausatmen = doppelte Entspannung. Puste den Stress einfach weg.";
+
+"Meditation" = "Meditation";
+"A no-fuss timer for zen sessions from 1 to 60 minutes, ending with a gentle \"time's up!\" nudge. Say goodbye to those sneaky \"just five more minutes\" traps." = "Ein simpler Timer für Zen-Sessions von 1 bis 60 Minuten. Am Ende gibt's einen sanften Hinweis. Tschüss, 'nur noch 5 Minuten'-Falle.";
+
+"LUNG iOS • Guide" = "LUNG iOS • Guide";

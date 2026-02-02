@@ -18,7 +18,7 @@ class ConnectivityManager: NSObject, ObservableObject, WCSessionDelegate {
     
     // MARK: - Sender (iOS -> Watch)
     
-    func sendSettings(patternId: String, duration: Double, isZenMode: Bool, isHapticsEnabled: Bool) {
+    func sendSettings(patternId: String, duration: Double, isZenMode: Bool, isHapticsEnabled: Bool, sessionMinutes: Int) {
         guard WCSession.default.activationState == .activated else { return }
         
         let context: [String: Any] = [
@@ -26,6 +26,7 @@ class ConnectivityManager: NSObject, ObservableObject, WCSessionDelegate {
             "savedDuration": duration,
             "savedZenMode": isZenMode,
             "savedHaptics": isHapticsEnabled,
+            "savedSessionMinutes": sessionMinutes,
             "timestamp": Date().timeIntervalSince1970
         ]
         
@@ -76,6 +77,9 @@ class ConnectivityManager: NSObject, ObservableObject, WCSessionDelegate {
         }
         if let haptics = context["savedHaptics"] as? Bool {
             defaults.set(haptics, forKey: "savedHaptics")
+        }
+        if let minutes = context["savedSessionMinutes"] as? Int {
+            defaults.set(minutes, forKey: "savedSessionMinutes")
         }
         
         // Notify Engine to reload

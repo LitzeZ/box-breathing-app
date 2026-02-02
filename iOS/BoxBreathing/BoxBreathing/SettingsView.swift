@@ -3,6 +3,7 @@ import SwiftUI
 struct SettingsView: View {
     @ObservedObject var engine: BreathEngine
     @Environment(\.presentationMode) var presentationMode
+    @State private var showGuide = false // Controls guide sheet
     
     // Custom Colors
     let bgDark = Color(red: 18/255, green: 22/255, blue: 27/255) // #12161b
@@ -17,7 +18,7 @@ struct SettingsView: View {
                 VStack(spacing: 20) {
                     // Header
                     HStack {
-                        Text("Settings") // Key "Settings"
+                        Text(NSLocalizedString("Settings", comment: "Settings Title")) // Key "Settings"
                             .font(.system(size: 28, weight: .bold, design: .rounded))
                             .foregroundColor(.white)
                         Spacer()
@@ -44,7 +45,7 @@ struct SettingsView: View {
                                         Text("\(engine.lastSessionMinutes) min")
                                             .font(.system(size: 14, weight: .semibold))
                                             .foregroundColor(.white.opacity(0.9))
-                                        Text("Last Session") // Key "Last Session"
+                                        Text(NSLocalizedString("Last Session", comment: "Last Session Label")) // Key "Last Session"
                                             .font(.caption2)
                                             .foregroundColor(.white.opacity(0.4))
                                     }
@@ -62,7 +63,7 @@ struct SettingsView: View {
                                         Text("\(engine.todaySessionCount)")
                                             .font(.system(size: 14, weight: .semibold))
                                             .foregroundColor(.white.opacity(0.9))
-                                        Text("Today") // Key "Today"
+                                        Text(NSLocalizedString("Today", comment: "Today Label")) // Key "Today"
                                             .font(.caption2)
                                             .foregroundColor(.white.opacity(0.4))
                                     }
@@ -75,9 +76,20 @@ struct SettingsView: View {
                             
                             // 1. Pattern Grid with Icons and Animation
                             VStack(alignment: .leading, spacing: 12) {
-                                Label("Breathing Pattern", systemImage: "lungs.fill") // Key
-                                    .font(.headline)
-                                    .foregroundColor(.white.opacity(0.9))
+                                HStack {
+                                    Label(NSLocalizedString("Breathing Pattern", comment: "Section Header"), systemImage: "lungs.fill") // Key
+                                        .font(.headline)
+                                        .foregroundColor(.white.opacity(0.9))
+                                    
+                                    Spacer()
+                                    
+                                    // Info Button for Guide
+                                    Button(action: { showGuide = true }) {
+                                        Image(systemName: "info.circle")
+                                            .font(.system(size: 20))
+                                            .foregroundColor(.white.opacity(0.4))
+                                    }
+                                }
                                 
                                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
                                     ForEach(BreathingPattern.allPresets) { pattern in
@@ -95,12 +107,7 @@ struct SettingsView: View {
                                     }
                                 }
                                 
-                                Text(engine.currentPattern.description)
-                                    .font(.caption)
-                                    .foregroundColor(.white.opacity(0.5))
-                                    .frame(maxWidth: .infinity, alignment: .center)
-                                    .padding(.top, 4)
-                                    .animation(.easeInOut, value: engine.currentPattern.id)
+
                             }
                             .padding(20)
                             .background(cardColor)
@@ -109,7 +116,7 @@ struct SettingsView: View {
                             // 2. Duration Slider Card
                             VStack(alignment: .leading, spacing: 12) {
                                 HStack {
-                                    Label("Phase Duration", systemImage: "timer") // Key
+                                    Label(NSLocalizedString("Phase Duration", comment: "Section Header"), systemImage: "timer") // Key
                                         .font(.headline)
                                         .foregroundColor(.white.opacity(0.9))
                                     Spacer()
@@ -122,7 +129,7 @@ struct SettingsView: View {
                                 Slider(value: $engine.duration, in: 3.0...15.0, step: 0.5)
                                     .tint(accentBlue)
                                 
-                                Text("Speed of Inhale-Hold-Exhale") // Key
+                                Text(NSLocalizedString("Speed of Inhale-Hold-Exhale", comment: "Duration Description")) // Key
                                     .font(.caption)
                                     .foregroundColor(.white.opacity(0.4))
                                     .multilineTextAlignment(.center)
@@ -151,13 +158,16 @@ struct SettingsView: View {
                         .padding(.horizontal, 20)
                     }
                     
-                    Text("LUNG iOS • v1.0") // Key
+                    Text(NSLocalizedString("LUNG iOS • © 2026", comment: "Footer")) // Key
                         .font(.caption2)
                         .foregroundColor(.white.opacity(0.2))
                         .padding(.bottom, 10)
                 }
             }
             .navigationBarHidden(true)
+            .sheet(isPresented: $showGuide) {
+                GuideView()
+            }
         }
     }
 }

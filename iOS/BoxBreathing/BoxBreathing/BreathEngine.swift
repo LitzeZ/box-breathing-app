@@ -22,7 +22,12 @@ class BreathEngine: ObservableObject {
         }
     }
     @Published var sessionMinutes: Int {
-        didSet { UserDefaults.standard.set(sessionMinutes, forKey: "savedSessionMinutes") }
+        didSet { 
+            UserDefaults.standard.set(sessionMinutes, forKey: "savedSessionMinutes")
+            #if os(iOS)
+            sendSettingsUpdate()
+            #endif
+        }
     }
     @Published var duration: Double {
         didSet { 
@@ -42,7 +47,8 @@ class BreathEngine: ObservableObject {
             #endif
             
             if isZenMode && isRunning {
-                startZenModeIdleTimer()
+                // Start immediate fadeout (no delay) when manually toggled
+                startZenModeIdleTimer(delay: 0.0)
             } else if !isZenMode {
                 idleTimer?.invalidate()
                 zenModeOpacity = 1.0
@@ -161,7 +167,7 @@ class BreathEngine: ObservableObject {
         sessionEndTime = Date().addingTimeInterval(TimeInterval(sessionMinutes * 60))
         
         startBreathingCycle()
-        startZenModeIdleTimer() // Begin idle tracking for Zen Mode
+        startZenModeIdleTimer() // Begin idle tracking for Zen Mode (default 5s)
         
         #if os(iOS)
         soundManager.startSilence() // KEEP ALIVE
@@ -215,19 +221,19 @@ class BreathEngine: ObservableObject {
     /// Call this from UI on any user interaction to reset idle timer and restore visibility.
     func resetZenModeIdle() {
         zenModeOpacity = 1.0
-        startZenModeIdleTimer()
+        startZenModeIdleTimer(delay: 5.0)
     }
     
-    private func startZenModeIdleTimer() {
+    private func startZenModeIdleTimer(delay: TimeInterval = 5.0) {
         idleTimer?.invalidate()
         
         guard isRunning && isZenMode else { return }
         
-        // After 5 seconds of inactivity, fade out UI over 8 seconds (very slow)
-        idleTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { [weak self] _ in
+        // Fade out UI over 6 seconds after delay
+        idleTimer = Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { [weak self] _ in
             // Must dispatch to main thread for proper SwiftUI animation
             DispatchQueue.main.async {
-                withAnimation(.easeInOut(duration: 8.0)) {
+                withAnimation(.easeInOut(duration: 6.0)) {
                     self?.zenModeOpacity = 0.0
                 }
             }
@@ -493,12 +499,12 @@ class BreathEngine: ObservableObject {
             self.duration = UserDefaults.standard.object(forKey: "savedDuration") as? Double ?? 6.0
             self.isZenMode = UserDefaults.standard.bool(forKey: "savedZenMode")
             self.isHapticsEnabled = UserDefaults.standard.object(forKey: "savedHaptics") as? Bool ?? true
+            self.sessionMinutes = UserDefaults.standard.object(forKey: "savedSessionMinutes") as? Int ?? 15
             
-            // Note: We don't typically sync Session Minutes or Mute state, but we could.
-            // For now, mirroring core breathing params is key.
-            
-            // If running, we might need to restart or adjust? 
-            // Better to let it apply to next cycle or update on fly (duration updates live).
+            // Validate Running State
+            if !self.isRunning {
+                self.remainingSessionSeconds = self.sessionMinutes * 60
+            }
         }
     }
     
@@ -508,7 +514,8 @@ class BreathEngine: ObservableObject {
             patternId: currentPattern.id,
             duration: duration,
             isZenMode: isZenMode,
-            isHapticsEnabled: isHapticsEnabled
+            isHapticsEnabled: isHapticsEnabled,
+            sessionMinutes: sessionMinutes
         )
         #endif
     }
