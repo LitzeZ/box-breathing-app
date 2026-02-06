@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct MainView: View {
-    @StateObject private var engine = BreathEngine()
+    @StateObject var engine = BreathEngine() // Changed from private to internal access
     @State private var showSettings = false
     
     // Gradient matching style.css (Radial Gradient)
@@ -26,7 +26,7 @@ struct MainView: View {
                 // Header Layout
                 Spacer()
                 
-                Text(engine.isRunning ? engine.phaseName.uppercased() : (engine.currentPattern.isTimerOnly == true ? engine.currentPattern.name.uppercased() : "\(engine.currentPattern.name.uppercased()) BREATHING"))
+                Text(engine.isRunning ? engine.phaseName.uppercased() : (engine.currentPattern.isTimerOnly == true ? engine.currentPattern.name.uppercased() : "\(engine.currentPattern.name.uppercased())\(NSLocalizedString("BREATHING", comment: "Title Suffix"))"))
                     .font(.system(size: 24, weight: .light, design: .rounded))
                     .tracking(4) // Letter Spacing
                     .foregroundColor(.white.opacity(0.9))
@@ -162,7 +162,33 @@ struct MainView: View {
                 withAnimation { engine.toggle() }
             }
         }
+        // Intro / Onboarding Overlay
+        .overlay(
+            Group {
+                if showIntro {
+                    IntroView(engine: engine, isPresented: $showIntro)
+                        .transition(.opacity)
+                        // When intro is dismissed, mark as launched
+                        .onDisappear {
+                            hasLaunchedBefore = true
+                        }
+                }
+            }
+            .animation(.easeInOut, value: showIntro)
+        )
+        .onAppear {
+            // Check first launch
+            if !hasLaunchedBefore {
+                // Small delay to let view settle/layout before showing overlay if needed, 
+                // but direct assignment usually works in onAppear for overlays
+                showIntro = true
+            }
+        }
     }
+    
+    // Onboarding State
+    @AppStorage("hasLaunchedBefore") private var hasLaunchedBefore: Bool = false
+    @State private var showIntro = false
     
     func timeString(from totalSeconds: Int) -> String {
         let minutes = totalSeconds / 60

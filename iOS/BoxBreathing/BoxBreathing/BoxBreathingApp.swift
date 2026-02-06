@@ -9,6 +9,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 @main
 struct BoxBreathingApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @AppStorage("hasLaunchedBefore") private var hasLaunchedBefore: Bool = false
+    @State private var showIntro: Bool = false
     
     var body: some Scene {
         WindowGroup {

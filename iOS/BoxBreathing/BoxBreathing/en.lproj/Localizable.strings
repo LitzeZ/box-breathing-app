@@ -9,6 +9,9 @@
 "Settings" = "Settings";
 "Last Session" = "Last Session";
 "Today" = "Today";
+"Last 7 Days" = "Last 7 Days";
+"Streak" = "Streak";
+"Days" = "Days";
 "Breathing Pattern" = "Breathing Pattern";
 "Phase Duration" = "Phase Duration";
 "Speed of Inhale-Hold-Exhale" = "Speed of Inhale-Hold-Exhale";
@@ -46,3 +49,38 @@
 "A no-fuss timer for zen sessions from 1 to 60 minutes, ending with a gentle \"time's up!\" nudge. Say goodbye to those sneaky \"just five more minutes\" traps." = "A no-fuss timer for zen sessions from 1 to 60 minutes, ending with a gentle \"time's up!\" nudge. Say goodbye to those sneaky \"just five more minutes\" traps.";
 
 "LUNG iOS • Guide" = "LUNG iOS • Guide";
+
+// Onboarding
+"Welcome" = "Welcome";
+"Choose your breathing style to get started." = "Choose your breathing style to get started.";
+"Begin Journey" = "Begin Journey";
+
+
+// Models.swift Keys
+"Box" = "Box";
+"Focus & Stress Relief" = "Focus & Stress Relief";
+"Calm" = "Calm";
+"Balance (4-2-4)" = "Balance (4-2-4)";
+"Relax" = "Relax";
+"Sleep Aid (4-7-8)" = "Sleep Aid (4-7-8)";
+"Simple" = "Simple";
+"Natural Breathing" = "Natural Breathing";
+"Unwind" = "Unwind";
+"Deep Calm (1:2)" = "Deep Calm (1:2)";
+"Pure Timer" = "Pure Timer";
+
+// Phases
+"Inhale" = "Inhale";
+"Hold" = "Hold";
+"Exhale" = "Exhale";
+"Meditate" = "Meditate";
+
+// IntroView Headers
+"The Science" = "The Science";
+"Choose Pattern" = "Choose Pattern";
+"Select a breathing style to get started." = "Select a breathing style to get started.";
+
+// Main View
+"BREATHING" = " BREATHING";
+"Swipe" = "Swipe";
+

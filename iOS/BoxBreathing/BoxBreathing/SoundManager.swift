@@ -103,7 +103,7 @@ class SoundManager {
         guard let buffer = silenceBuffer else { return }
         if !silencePlayer.isPlaying {
             silencePlayer.scheduleBuffer(buffer, at: nil, options: .loops, completionHandler: nil)
-            silencePlayer.volume = 0.001 // Non-zero but inaudible, just in case
+            silencePlayer.volume = 0.01 // Increased to ensure iOS respects the audio session
             silencePlayer.play()
         }
     }
@@ -226,7 +226,7 @@ class SoundManager {
         guard let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frameCount) else { return nil }
         buffer.frameLength = frameCount
         let channels = buffer.floatChannelData!
-        let leftChannel = channels[0]
+        // Remove: let leftChannel = channels[0]
         
         for i in 0..<Int(frameCount) {
             let t = Double(i) / format.sampleRate
@@ -259,7 +259,12 @@ class SoundManager {
                 finalGain = 1.0
             }
             
-            leftChannel[i] = Float(wave * envelope) * finalGain * 0.35 // Quieter for deep relaxation
+            let sample = Float(wave * envelope) * finalGain * 0.35 // Quieter for deep relaxation
+            
+            // Write to all channels (Stereo/Mono support)
+            for ch in 0..<Int(format.channelCount) {
+                channels[ch][i] = sample
+            }
         }
         return buffer
     }
@@ -272,7 +277,7 @@ class SoundManager {
         buffer.frameLength = frameCount
         
         let channels = buffer.floatChannelData!
-        let leftChannel = channels[0]
+        // let leftChannel = channels[0] // Warning fixed
         
         for i in 0..<Int(frameCount) {
             let t = Double(i) / format.sampleRate
@@ -303,7 +308,12 @@ class SoundManager {
                 finalGain = 1.0
             }
             
-            leftChannel[i] = Float((f1 + f2 + f3) * envelope) * finalGain
+            let sample = Float((f1 + f2 + f3) * envelope) * finalGain
+            
+            // Write to all channels
+            for ch in 0..<Int(format.channelCount) {
+                channels[ch][i] = sample
+            }
         }
         return buffer
     }

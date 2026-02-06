@@ -11,6 +11,8 @@ struct CircleView: View {
                     .fill(Color.white.opacity(0.25))
                     .frame(width: 190, height: 190)
                     .blur(radius: 25)
+                    .padding(60) // Prevent blur clipping (square artifact)
+                    .drawingGroup() // Metal rendering for smooth "cloud" look
                     .scaleEffect(scaleFactor())
             }
             

@@ -79,9 +79,12 @@ class BreathEngine: ObservableObject {
     @Published var remainingSessionSeconds: Int = 0
     
     // Session Statistics (persisted)
-    @Published var lastSessionMinutes: Int = 0
-    @Published var todaySessionCount: Int = 0
-    private var lastSessionDateKey = "lastSessionDate"
+    @Published var weeklyMinutes: Int = 0
+    @Published var currentStreak: Int = 0
+    
+    private let dailyLogKey = "dailyMinutesLog"
+    private let streakKey = "currentStreak"
+    private let lastStreakDateKey = "lastStreakDate"
     
     // Audio Readiness
     @Published var isAudioReady: Bool = false
@@ -125,8 +128,7 @@ class BreathEngine: ObservableObject {
         self.remainingSessionSeconds = sessionMinutes * 60
         
         // Load session stats
-        self.lastSessionMinutes = UserDefaults.standard.integer(forKey: "lastSessionMinutes")
-        loadTodaySessionCount()
+        loadStatistics()
         
         #if os(iOS)
         // Listen for Audio Readiness
@@ -163,6 +165,10 @@ class BreathEngine: ObservableObject {
     func start() {
         guard !isRunning else { return }
         
+        #if os(iOS)
+        UIApplication.shared.isIdleTimerDisabled = true
+        #endif
+        
         isRunning = true
         sessionEndTime = Date().addingTimeInterval(TimeInterval(sessionMinutes * 60))
         
@@ -180,6 +186,10 @@ class BreathEngine: ObservableObject {
         timer = nil
         idleTimer?.invalidate()
         idleTimer = nil
+        
+        #if os(iOS)
+        UIApplication.shared.isIdleTimerDisabled = false
+        #endif
         
         #if os(watchOS)
         session?.invalidate()
@@ -448,38 +458,78 @@ class BreathEngine: ObservableObject {
     
     // MARK: - Session Statistics
     
-    private func loadTodaySessionCount() {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        let today = formatter.string(from: Date())
-        let savedDate = UserDefaults.standard.string(forKey: lastSessionDateKey) ?? ""
+    private func loadStatistics() {
+        // Load Streak
+        currentStreak = UserDefaults.standard.integer(forKey: streakKey)
         
-        if savedDate == today {
-            todaySessionCount = UserDefaults.standard.integer(forKey: "todaySessionCount")
-        } else {
-            // New day, reset count
-            todaySessionCount = 0
+        // Calculate Weekly Minutes from Log
+        let log = UserDefaults.standard.dictionary(forKey: dailyLogKey) as? [String: Int] ?? [:]
+        weeklyMinutes = calculateWeeklyMinutes(from: log)
+        
+        // Check if streak is broken (unless it's today)
+        let savedDate = UserDefaults.standard.string(forKey: lastStreakDateKey) ?? ""
+        let today = formatDate(Date())
+        let yesterday = formatDate(Date().addingTimeInterval(-86400))
+        
+        if savedDate != today && savedDate != yesterday && currentStreak > 0 {
+             // Streak broken? Only reset if user opens app after missing a day?
+             // Actually, for display purposes, if broken, show 0? 
+             // Common practice: Show 0, but maybe don't wipe it until end of day.
+             // Let's keep it simple: if savedDate < yesterday, streak is technically 0 for *next* session, but show 0 now.
+             if savedDate < yesterday {
+                 currentStreak = 0 // Visually 0, will be overwritten on next save
+             }
         }
     }
     
     private func recordSessionComplete(durationMinutes: Int) {
+        let today = formatDate(Date())
+        var log = UserDefaults.standard.dictionary(forKey: dailyLogKey) as? [String: Int] ?? [:]
+        
+        // 1. Update Daily Log
+        let currentDaily = log[today] ?? 0
+        log[today] = currentDaily + durationMinutes
+        UserDefaults.standard.set(log, forKey: dailyLogKey)
+        
+        // Update View State
+        weeklyMinutes = calculateWeeklyMinutes(from: log)
+        
+        // 2. Update Streak
+        let lastDate = UserDefaults.standard.string(forKey: lastStreakDateKey) ?? ""
+        
+        if lastDate == today {
+            // Already active today, streak doesn't change
+        } else {
+            let yesterday = formatDate(Date().addingTimeInterval(-86400))
+            if lastDate == yesterday {
+                currentStreak += 1
+            } else {
+                currentStreak = 1 // New Streak or Reset
+            }
+            UserDefaults.standard.set(currentStreak, forKey: streakKey)
+            UserDefaults.standard.set(today, forKey: lastStreakDateKey)
+        }
+    }
+    
+    // Helper to sum up last 7 days
+    private func calculateWeeklyMinutes(from log: [String: Int]) -> Int {
+        var total = 0
+        let calendar = Calendar.current
+        let today = Date()
+        
+        for i in 0..<7 {
+            if let date = calendar.date(byAdding: .day, value: -i, to: today) {
+                let key = formatDate(date)
+                total += log[key] ?? 0
+            }
+        }
+        return total
+    }
+    
+    private func formatDate(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
-        let today = formatter.string(from: Date())
-        
-        // Update last session duration
-        lastSessionMinutes = durationMinutes
-        UserDefaults.standard.set(durationMinutes, forKey: "lastSessionMinutes")
-        
-        // Check if same day
-        let savedDate = UserDefaults.standard.string(forKey: lastSessionDateKey) ?? ""
-        if savedDate != today {
-            todaySessionCount = 1
-            UserDefaults.standard.set(today, forKey: lastSessionDateKey)
-        } else {
-            todaySessionCount += 1
-        }
-        UserDefaults.standard.set(todaySessionCount, forKey: "todaySessionCount")
+        return formatter.string(from: date)
     }
     
     // MARK: - Connectivity / Sync

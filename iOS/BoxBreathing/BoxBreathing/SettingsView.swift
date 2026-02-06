@@ -34,45 +34,43 @@ struct SettingsView: View {
                     ScrollView {
                         VStack(spacing: 16) {
                             
-                            // 0. Session Statistics Card (if any sessions completed)
-                            if engine.lastSessionMinutes > 0 || engine.todaySessionCount > 0 {
-                                HStack(spacing: 20) {
-                                    // Last Session
-                                    VStack(spacing: 4) {
-                                        Image(systemName: "clock")
-                                            .font(.system(size: 18))
-                                            .foregroundColor(accentBlue)
-                                        Text("\(engine.lastSessionMinutes) min")
-                                            .font(.system(size: 14, weight: .semibold))
-                                            .foregroundColor(.white.opacity(0.9))
-                                        Text(NSLocalizedString("Last Session", comment: "Last Session Label")) // Key "Last Session"
-                                            .font(.caption2)
-                                            .foregroundColor(.white.opacity(0.4))
-                                    }
-                                    .frame(maxWidth: .infinity)
-                                    
-                                    Divider()
-                                        .frame(height: 40)
-                                        .background(Color.white.opacity(0.1))
-                                    
-                                    // Today's Sessions
-                                    VStack(spacing: 4) {
-                                        Image(systemName: "flame")
-                                            .font(.system(size: 18))
-                                            .foregroundColor(accentBlue)
-                                        Text("\(engine.todaySessionCount)")
-                                            .font(.system(size: 14, weight: .semibold))
-                                            .foregroundColor(.white.opacity(0.9))
-                                        Text(NSLocalizedString("Today", comment: "Today Label")) // Key "Today"
-                                            .font(.caption2)
-                                            .foregroundColor(.white.opacity(0.4))
-                                    }
-                                    .frame(maxWidth: .infinity)
+                            // 0. Session Statistics Card (always shown now)
+                            HStack(spacing: 20) {
+                                // Weekly Minutes
+                                VStack(spacing: 4) {
+                                    Image(systemName: "clock")
+                                        .font(.system(size: 18))
+                                        .foregroundColor(accentBlue)
+                                    Text("\(engine.weeklyMinutes) min")
+                                        .font(.system(size: 14, weight: .semibold))
+                                        .foregroundColor(.white.opacity(0.9))
+                                    Text(NSLocalizedString("Last 7 Days", comment: "Stats Label")) // Key "Last 7 Days"
+                                        .font(.caption2)
+                                        .foregroundColor(.white.opacity(0.4))
                                 }
-                                .padding(16)
-                                .background(cardColor)
-                                .cornerRadius(16)
+                                .frame(maxWidth: .infinity)
+                                
+                                Divider()
+                                    .frame(height: 40)
+                                    .background(Color.white.opacity(0.1))
+                                
+                                // Streak
+                                VStack(spacing: 4) {
+                                    Image(systemName: "flame")
+                                        .font(.system(size: 18))
+                                        .foregroundColor(accentBlue)
+                                    Text("\(engine.currentStreak) \(NSLocalizedString("Days", comment: "Days Unit"))")
+                                        .font(.system(size: 14, weight: .semibold))
+                                        .foregroundColor(.white.opacity(0.9))
+                                    Text(NSLocalizedString("Streak", comment: "Stats Label")) // Key "Streak"
+                                        .font(.caption2)
+                                        .foregroundColor(.white.opacity(0.4))
+                                }
+                                .frame(maxWidth: .infinity)
                             }
+                            .padding(16)
+                            .background(cardColor)
+                            .cornerRadius(16)
                             
                             // 1. Pattern Grid with Icons and Animation
                             VStack(alignment: .leading, spacing: 12) {
