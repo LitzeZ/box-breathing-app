@@ -67,6 +67,12 @@ class BoxBreathingApp {
     longPressTimer: ReturnType<typeof setTimeout> | null;
     idleTimer: ReturnType<typeof setTimeout> | null;
 
+    // Performance: cached values to avoid per-frame recalculation
+    private cachedPreset: BreathingPattern | null = null;
+    private cachedPresetId: string = '';
+    private lastCountdownValue: number = -1;
+    private lastSessionDisplaySeconds: number = -1;
+
     constructor() {
         this.dom = {
             circle: document.getElementById("circle")!,
@@ -166,6 +172,18 @@ class BoxBreathingApp {
         this.updateDisplay();
         this.updateSessionDisplay();
         this.initZenModeListener();
+
+        // Pause animation when tab/app is hidden to save battery
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && this.state.isRunning) {
+                if (this.state.animationFrameId !== null) {
+                    cancelAnimationFrame(this.state.animationFrameId);
+                    this.state.animationFrameId = null;
+                }
+            } else if (!document.hidden && this.state.isRunning) {
+                this.loop();
+            }
+        });
     }
 
     injectSettingsUI() {
@@ -273,6 +291,14 @@ class BoxBreathingApp {
             }
             this.lastTapTime = currentTime;
         });
+    }
+
+    getPreset(): BreathingPattern {
+        if (this.cachedPresetId !== this.state.currentPresetId || !this.cachedPreset) {
+            this.cachedPreset = this.config.presets.find(p => p.id === this.state.currentPresetId)!;
+            this.cachedPresetId = this.state.currentPresetId;
+        }
+        return this.cachedPreset!;
     }
 
     setPreset(id: string) {
@@ -391,6 +417,11 @@ class BoxBreathingApp {
     stop() {
         this.state.isRunning = false;
         if (this.state.animationFrameId !== null) cancelAnimationFrame(this.state.animationFrameId);
+        this.state.animationFrameId = null;
+
+        // Reset cached display values
+        this.lastCountdownValue = -1;
+        this.lastSessionDisplaySeconds = -1;
 
         this.dom.startBtn.textContent = "Start";
         this.dom.startBtn.classList.remove("stop");
@@ -419,27 +450,8 @@ class BoxBreathingApp {
         const now = performance.now();
         const elapsed = (now - this.state.phaseStartTime) / 1000;
 
-        // Check if phase is complete
-        const preset = this.config.presets.find(p => p.id === this.state.currentPresetId)!;
+        const preset = this.getPreset();
         const currentRatio = preset.ratios[this.state.currentPhase];
-        // Ensure baseDuration applies to ratio 1. So if ratio is 4, duration is baseDuration * 4 (if base is 1s "unit")
-        // OR: User sets "Duration per Phase" (defaults 6s). 
-        // Interpretation: "Duration per Phase" usually implies the average or the '1' unit.
-        // Let's assume user setting (e.g. 4s) is the '1' unit.
-        // So 4-7-8 would be: Inhale 4s, Hold 7s, Exhale 8s IF ratios are 1-1.75-2?
-        // NO. The standard is "4-7-8 seconds". Box is "4-4-4-4 seconds".
-        // The User setting is "Duration per Phase". In Box breathing, this is 4s (or 6s default).
-        // For 4-7-8, the setting is less clear.
-        // Let's interpret baseDuration as the "Inhale" duration (Ratio 4).
-        // Then normalize ratios relative to the first phase (Inhale).
-        // Actually, simplest UX: baseDuration = length of the '1' ratio unit? 
-        // No, user sees "6.0s". If they switch to Relax (4-7-8), 6s Inhale (4 units) -> Hold 10.5s -> Exhale 12s? 
-        // Let's treat baseDuration as the duration of the current phase if ratios were equal.
-        // Better: Treat baseDuration as the duration of the 1st phase (Inhale) and scale others.
-        // REVISION: The `ratios` array in presets (e.g., [4, 7, 8]) represents relative time.
-        // If user sets "4.0s", that should map to the "4" in "4-7-8"? 
-        // Yes. So unit = baseDuration / ratio[0].
-
         const unitDuration = this.state.baseDuration / preset.ratios[0];
         const phaseDuration = unitDuration * currentRatio;
 
@@ -453,7 +465,7 @@ class BoxBreathingApp {
 
 
     nextPhase() {
-        const preset = this.config.presets.find(p => p.id === this.state.currentPresetId)!;
+        const preset = this.getPreset();
         this.state.currentPhase = (this.state.currentPhase + 1) % preset.phases.length;
         this.state.phaseStartTime = performance.now();
 
@@ -475,66 +487,65 @@ class BoxBreathingApp {
     }
 
     updateUI(elapsed: number, phaseDuration: number) {
+        // Only update countdown text when the displayed second changes
         const remaining = Math.max(0, phaseDuration - elapsed);
-        this.dom.countdown.textContent = Math.ceil(remaining).toString() || "";
+        const countdownValue = Math.ceil(remaining);
+        if (countdownValue !== this.lastCountdownValue) {
+            this.lastCountdownValue = countdownValue;
+            this.dom.countdown.textContent = countdownValue.toString() || "";
+        }
 
         const phaseProgress = elapsed / phaseDuration;
         const t = Math.max(0, Math.min(1, phaseProgress));
 
-        // Animation Logic based on Preset
-        const preset = this.config.presets.find(p => p.id === this.state.currentPresetId)!;
+        const preset = this.getPreset();
         const phaseName = preset.phases[this.state.currentPhase];
         let scale = 0.35;
 
-        // Generalizing logic based on phase name string
         if (phaseName === "Inhale") {
             scale = 0.35 + (0.65 * this.easeInOut(t));
         } else if (phaseName === "Exhale") {
             scale = 1.0 - (0.65 * this.easeInOut(t));
         } else if (phaseName === "Hold") {
-            // Check previous phase to decide if holding Full or Empty
-            // Quick hack: if current index is odd in Box breathing (1 or 3)
             const prevPhaseIndex = (this.state.currentPhase - 1 + preset.phases.length) % preset.phases.length;
             const prevPhaseName = preset.phases[prevPhaseIndex];
 
             if (prevPhaseName === "Inhale") {
-                // Hold Full
                 scale = 1.0 + (0.02 * Math.sin(elapsed * 2.5));
             } else {
-                // Hold Empty
                 scale = 0.35 + (0.01 * Math.sin(elapsed * 2.5));
             }
         }
 
-        this.dom.circle.style.transform = `scale(${scale}) translateZ(0)`;
+        this.dom.circle.style.transform = `scale(${scale})`;
 
-        // Progress Ring Calculation
-        // Calculate total cycle duration based on ratios
+        // Progress Ring - use pre-computed values instead of recalculating every frame
         const unitDuration = this.state.baseDuration / preset.ratios[0];
-        const totalDuration = preset.ratios.reduce((a, b) => a + b, 0) * unitDuration;
+        const ratioSum = preset.ratios.reduce((a, b) => a + b, 0);
+        const totalDuration = ratioSum * unitDuration;
 
-        // Calculate accumulated time for previous phases
         let timePrior = 0;
         for (let i = 0; i < this.state.currentPhase; i++) {
             timePrior += preset.ratios[i] * unitDuration;
         }
 
-        const cycleProgressTime = timePrior + elapsed;
-        const cycleProgress = cycleProgressTime / totalDuration;
-
+        const cycleProgress = (timePrior + elapsed) / totalDuration;
         const offset = this.config.circleCircumference * (1 - cycleProgress);
         this.dom.progressCircle.style.strokeDashoffset = offset.toString();
 
-        // Session Timer
+        // Session Timer - only update when displayed second changes
         if (this.state.sessionEndTime) {
             const now = performance.now();
             const sessionRemaining = Math.max(0, Math.ceil((this.state.sessionEndTime - now) / 1000));
             if (sessionRemaining <= 0) {
-                this.playGong(); // END OF SESSION SOUND
+                this.playGong();
                 this.stop();
                 return;
             }
-            this.updateSessionDisplay();
+            if (sessionRemaining !== this.lastSessionDisplaySeconds) {
+                this.lastSessionDisplaySeconds = sessionRemaining;
+                this.updateSessionDisplay();
+            }
         }
     }
 
@@ -570,6 +581,13 @@ class BoxBreathingApp {
 
         osc.start(now);
         osc.stop(now + 6.0);
+
+        // Clean up audio nodes after playback to prevent memory leaks
+        osc.onended = () => {
+            osc.disconnect();
+            filter.disconnect();
+            gain.disconnect();
+        };
     }
 
     playPhaseSound(phaseIndex: number) {
@@ -583,7 +601,7 @@ class BoxBreathingApp {
 
         // Reverted to steady tones based on user feedback
         const now = this.audioContext.currentTime;
-        const preset = this.config.presets.find(p => p.id === this.state.currentPresetId)!;
+        const preset = this.getPreset();
         const phaseName = preset.phases[phaseIndex];
 
         gainNode.gain.setValueAtTime(0, now);
@@ -603,6 +621,11 @@ class BoxBreathingApp {
 
         oscillator.start(now);
         oscillator.stop(now + 1.5);
+
+        oscillator.onended = () => {
+            oscillator.disconnect();
+            gainNode.disconnect();
+        };
     }
 
     // --- Soundscape Generation (Pink/Brown Noise) ---
@@ -635,6 +658,11 @@ class BoxBreathingApp {
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
         oscillator.start(now);
         oscillator.stop(now + 0.5);
+
+        oscillator.onended = () => {
+            oscillator.disconnect();
+            gain.disconnect();
+        };
     }
 
     triggerHaptic() {
@@ -660,6 +688,11 @@ class BoxBreathingApp {
         gain.gain.exponentialRampToValueAtTime(0.01, now + duration);
         oscillator.start(now);
         oscillator.stop(now + duration);
+
+        oscillator.onended = () => {
+            oscillator.disconnect();
+            gain.disconnect();
+        };
     }
 
     requestWakeLock() { if ('wakeLock' in navigator) { try { (navigator as any).wakeLock.request('screen'); } catch (e) { } } }

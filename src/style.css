@@ -34,7 +34,8 @@ body {
     /* Deep "Calm Night" Gradient - Exact Match attempt */
     background: radial-gradient(circle at 50% 30%, #1a3a4a 0%, #0d2129 40%, #0a151a 100%);
     background-size: 100% 100%;
-    animation: bgPulse 30s ease infinite alternate;
+    /* Removed continuous bgPulse animation - background-size 100% means
+       background-position changes have no visible effect but still cost GPU cycles */
     font-family: var(--font-main);
     color: var(--accent-color);
     overflow: hidden;
@@ -249,11 +250,8 @@ h1 {
     touch-action: manipulation;
     /* Remove generic transition to prevent fighting with keyframes */
     transition: box-shadow 0.5s ease, opacity 0.5s ease;
-    /* Performance Optimizations */
+    /* GPU compositing - will-change only during active animation (added/removed via JS class) */
     will-change: transform;
-    backface-visibility: hidden;
-    transform: translateZ(0);
-    /* Force GPU */
 }
 
 /* GPU Accelerated Glow Layer */
@@ -269,7 +267,6 @@ h1 {
     box-shadow: 0 0 50px rgba(255, 255, 255, 0.4), inset 0 0 50px rgba(255, 255, 255, 0.5);
     opacity: 0;
     transition: opacity 0.5s ease;
-    will-change: opacity;
     pointer-events: none;
     z-index: -1;
 }
@@ -337,7 +334,7 @@ h1 {
     /* Thinner line */
     fill: transparent;
     stroke-linecap: round;
-    transition: stroke-dashoffset 0.1s linear;
+    /* Removed transition - JS updates strokeDashoffset every frame, CSS transition causes jank */
 }
 
 
